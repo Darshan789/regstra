@@ -1,0 +1,225 @@
+/************* above 1920px *************/
+@media screen and (min-width: 1920px) {
+}
+
+/************* below 1280px *************/
+@media screen and (max-width: 1280px) {
+  .social-content {
+    padding: 0 5rem 0 3rem;
+  }
+}
+
+/************* below 1024px *************/
+@media screen and (max-width: 1024px) {
+  .social .social-content section > .panel-thin:first-child {
+    margin-right: 24px;
+  }
+  .social .social-content .social-handle {
+    right: -20px;
+  }
+}
+
+/************* below 960px **************/
+@media screen and (max-width: 960px) {
+	.modal.panel .close::after, .overlay-close::after {
+	    right: -36px;
+	}
+  .social aside .events ul li img {
+    display: none;
+  }
+}
+
+/************* below 768px **************/
+@media screen and (max-width: 768px) {
+	nav div input {
+    min-width: 220px;
+	}
+  #columns {
+  	column-gap: 30px;
+  }
+  #columns figure {
+  	width: 100%;
+  }
+  .social .social-content .grid-fixed-auto {
+    display: block;
+  }
+  .social .social-content aside {
+    display: none;
+  }
+  .social-content {
+    padding: 0 1rem;
+  }
+  .social .social-content .social-handle {
+    right: 0;
+  }
+  .social .social-content section > .panel-thin:first-child {
+    margin-right: 40px;
+  }
+  .modal .close::after, .overlay-close::after {
+    top: 10px;
+    right: 10px;
+  }
+  aside#conversations {
+    position: relative;
+    top: -20px;
+    width: 100%;
+    padding: 0 2rem;
+    overflow-x: scroll;
+  }
+  aside#conversations ul {
+    padding-left: 0;
+    display: flex;
+    flex-direction: row;
+  }
+  aside#conversations ul li div.flex-col.w-100pc {
+    display: none;
+  }
+  aside#conversations ul li {
+    cursor: pointer;
+  }
+  aside#conversations ul li a {
+    pointer-events: none;
+  }
+  aside#conversations ul li a img {
+    margin-right: 0 !important;
+  }
+  #chat-container.grid-fixed-auto {
+    display: block;
+    padding: 0 2rem;
+    box-sizing: border-box;
+  }
+  div#chat-input {
+    left: 2rem;
+    right: 2rem;
+    width: auto;
+  }
+  .slideshow-wrapper #slideshow .slide1::before, .slideshow-wrapper #slideshow .slide2::before, .slideshow-wrapper #slideshow .slide3::before {
+    content: "";
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #202020c9;
+  }
+  .slideshow-wrapper #slideshow .slide-grid {
+    grid-template-columns: 1fr;
+  }
+  .slideshow-wrapper .arrow-l {
+    left: 6px;
+  }
+  .slideshow-wrapper .arrow-r {
+    right: 6px;
+  }
+  .slideshow-wrapper #slideshow .slide1, .slideshow-wrapper #slideshow .slide2, .slideshow-wrapper #slideshow .slide3 {
+    background-position: 0;
+  }
+  .hide-b768 {
+    display: none;
+  }
+  .grid-100-below768 {
+    grid-template-columns: 1fr;
+  }
+  .grid-33-67-below768 {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    grid-gap: 20px;
+    width: 100%;
+  }
+}
+
+/************* below 620px **************/
+@media screen and (max-width: 620px) {
+	nav div input {
+    display: none;
+	}
+	nav #logo img {
+    margin-right: 0;
+	}
+	#columns {
+		padding: 2rem;
+	}
+  section {
+    padding: 0 2rem;
+  }
+  .overlay {
+    padding: 0;
+  }
+  .modal {
+    border-radius: 0;
+    width: 100%;
+    top: 0;
+    bottom: 0;
+    margin: 0;
+    right: 0;
+    left: 0;
+  }
+  .modal .modal-head {
+    border-radius: 0;
+  }
+	.modal.panel {
+		width: 100%;
+    margin: 25px auto auto auto;
+  }
+	.modal.panel .close::after, .overlay-close::after {
+    content: 'Close';
+    right: calc(50% - 50px);
+    top: -18px;
+    width: 100px;
+    height: 32px;
+    border-radius: 30px;
+    background-image: none;
+    font-size: 14px;
+    text-align: center;
+    line-height: 32px;
+    box-shadow: 0 14px 23px 0 rgba(19, 0, 72, 0.2);
+	}
+  .profile-head {
+    height: auto;
+  }
+  .profile-head .profile-info.grid-33-33-33 {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+  .profile-head .profile-info.grid-33-33-33 > * {
+    margin: auto;
+  }
+  .profile-head .profile-info.grid-33-33-33 p {
+    text-align: center;
+  }
+}
+
+/************* below 480px **************/
+@media screen and (max-width: 480px) {
+	#columns {
+		padding: 1rem;
+	}
+  .grid-33-67, .grid-67-33 {
+    grid-template-columns: 1fr;
+  }
+  section.stripe .js-dropdown:first-child .dropdown.bl {
+    right: auto;
+    left: 0;
+  }
+  .grid-100-below480 {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+  .mb-0-below480 {
+    margin-bottom: 0 !important;
+  }
+  .mb-20-below480 {
+    margin-bottom: 20px !important;
+  }
+}
+
+
+
+@media screen and (min-width: 769px) and (max-width: 1100px) { 
+    #chat-input { 
+        left: calc(25vw + 20px);
+        right: 0;
+    }
+}

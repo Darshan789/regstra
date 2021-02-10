@@ -1,0 +1,84 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none" x="0px" y="0px" width="298px" height="275px" viewBox="0 0 298 275">
+<defs>
+<linearGradient id="Gradient_1" gradientUnits="userSpaceOnUse" x1="193.86249999999998" y1="276.3875" x2="234.3375" y2="253.0125" spreadMethod="pad">
+<stop  offset="0%" stop-color="#7FA0DD"/>
+
+<stop  offset="100%" stop-color="#561D9C"/>
+</linearGradient>
+
+<linearGradient id="Gradient_2" gradientUnits="userSpaceOnUse" x1="280.95" y1="239.05" x2="247.55" y2="258.55" spreadMethod="pad">
+<stop  offset="0%" stop-color="#2E095C"/>
+
+<stop  offset="100%" stop-color="#C391FF"/>
+</linearGradient>
+
+<linearGradient id="Gradient_3" gradientUnits="userSpaceOnUse" x1="131.4125" y1="168.1625" x2="262.2875" y2="267.3375" spreadMethod="pad">
+<stop  offset="0%" stop-color="#2E095C"/>
+
+<stop  offset="20.392156862745097%" stop-color="#6829B3"/>
+
+<stop  offset="77.25490196078431%" stop-color="#BA81FF"/>
+
+<stop  offset="100%" stop-color="#5AD1DC"/>
+</linearGradient>
+
+<linearGradient id="Gradient_4" gradientUnits="userSpaceOnUse" x1="264.4125" y1="110.65" x2="101.3875" y2="204.35" spreadMethod="pad">
+<stop  offset="0%" stop-color="#2F0C5C"/>
+
+<stop  offset="17.647058823529413%" stop-color="#5F22A9"/>
+
+<stop  offset="59.6078431372549%" stop-color="#8E71DF"/>
+
+<stop  offset="100%" stop-color="#5099BF"/>
+</linearGradient>
+
+<linearGradient id="Gradient_5" gradientUnits="userSpaceOnUse" x1="13.962499999999977" y1="117.4625" x2="285.9375" y2="4.637499999999996" spreadMethod="pad">
+<stop  offset="0%" stop-color="#7644B5"/>
+
+<stop  offset="27.45098039215686%" stop-color="#4F1A91"/>
+
+<stop  offset="68.23529411764706%" stop-color="#AA64FF"/>
+
+<stop  offset="89.41176470588235%" stop-color="#5AD1D5"/>
+
+<stop  offset="100%" stop-color="#CEA6FF"/>
+</linearGradient>
+
+<g id="Layer0_0_FILL">
+<path fill="url(#Gradient_1)" stroke="none" d="
+M 190.25 265.3
+Q 190.45 268.5 197.3 271.15 204.15 273.75 213.85 273.75 223.5 273.75 230.35 271.15 237.2 268.5 237.6 263.7 237.95 258.8 231.2 255.95 224.45 253.05 213.25 257 202.05 260.9 196.05 261.45 190 262.05 190.25 265.3 Z"/>
+
+<path fill="url(#Gradient_2)" stroke="none" d="
+M 271.65 233.75
+Q 269.75 237.3 262.05 241.6
+L 255.45 245.25
+Q 252.1 247.55 251.8 251.9 251.45 255.85 254.1 258.9
+L 255.1 260.2 268.4 255.85
+Q 275.35 253.25 280.55 250.1 285.05 243.6 280.35 239 277.75 236.35 271.65 233.75 Z"/>
+
+<path fill="url(#Gradient_3)" stroke="none" d="
+M 156.1 186.45
+Q 130.25 183.15 129.85 179.85 129.85 177.5 137.55 173.55 114.3 182.5 105.6 190.45 92.7 201.75 112.6 211
+L 132.9 213.7
+Q 148.45 215.7 180 218.35 210.55 221 226.2 222.95 240.85 225 248.45 226.65 257.45 228.3 264.1 230.95 266.2 231.65 268.05 232.35
+L 271.65 233.75
+Q 277.75 236.35 280.35 239 285.05 243.6 280.55 250.1 294.9 238.9 287.65 225.65 283.7 218.7 276.4 215 253.15 202.75 217.6 195.45 194.65 190.8 156.1 186.45 Z"/>
+
+<path fill="url(#Gradient_4)" stroke="none" d="
+M 200.6 76.15
+Q 228.2 83.5 227.9 94.75 227.9 100.45 196.65 109.75 155.8 120.05 118.9 134.95 90 146.6 78.75 162.9 70.4 173.85 74.05 187.5 78.75 199.05 90.4 204.4 101.35 209.05 112.6 211 92.7 201.75 105.6 190.45 114.3 182.5 137.55 173.55 150.8 168.5 166.4 164.85 184.7 160.55 221.9 151.95 248.45 145.9 272.55 132.1 282.85 116.9 257.15 99.1 233.9 82.8 200.6 76.15 Z"/>
+
+<path fill="url(#Gradient_5)" stroke="none" d="
+M 296.65 96.1
+Q 298.6 71.2 267.75 48.95 245.5 32.65 219.25 23 192.35 12.7 168.75 8.7 100.65 -4.6 50.85 5.1 30.9 9.1 18.3 18.05 2 29.65 1 48.25 1 68.2 16.25 81.45 28.55 73.2 76.05 68.9 123.6 64.55 159.8 68.9 178 70.5 200.6 76.15 233.9 82.8 257.15 99.1 282.85 116.9 272.55 132.1
+L 272.55 132.15
+Q 282.65 127 289 117.4 295.35 107.75 296.65 96.1 Z"/>
+</g>
+</defs>
+
+<g transform="matrix( 1, 0, 0, 1, 0,0) ">
+<use xlink:href="#Layer0_0_FILL"/>
+</g>
+</svg>

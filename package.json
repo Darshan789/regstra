@@ -1,0 +1,48 @@
+{
+  "name": "react_project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "webpack serve",
+    "build": "webpack"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "body-parser": "^1.19.0",
+    "bootstrap": "^4.5.3",
+    "bson": "^4.2.2",
+    "buffer": "^6.0.3",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "kerberos": "^1.1.4",
+    "md5": "^2.3.0",
+    "mongodb": "^3.6.3",
+    "mongodb-core": "^3.2.7",
+    "mongoose": "^5.11.10",
+    "multer": "^1.4.2",
+    "node-gyp": "^7.1.2",
+    "react": "^17.0.1",
+    "react-autosuggest": "^10.1.0",
+    "react-bootstrap": "^1.4.0",
+    "react-dom": "^17.0.1",
+    "react-router-dom": "^5.2.0",
+    "rebuild": "^0.1.2",
+    "util": "^0.12.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@types/mongoose": "^5.10.3",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/preset-env": "^7.12.11",
+    "@babel/preset-react": "^7.12.10",
+    "babel-loader": "^8.2.2",
+    "html-webpack-plugin": "^4.5.0",
+    "webpack": "^5.11.0",
+    "webpack-cli": "^4.2.0",
+    "webpack-dev-server": "^3.11.0"
+  }
+}

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="9px" height="6px" viewBox="0 0 9 6" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.2 (57519) - http://www.bohemiancoding.com/sketch -->
+    <title>Path 2</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round">
+        <g id="Desktop-Copy-9" transform="translate(-841.000000, -80.000000)" fill-rule="nonzero" stroke="#202020">
+            <g id="filters" transform="translate(363.000000, 69.000000)">
+                <g id="button-1" transform="translate(360.000000, 0.000000)">
+                    <polyline id="Path-2" transform="translate(122.500000, 14.000000) rotate(-180.000000) translate(-122.500000, -14.000000) " points="118 16 122.5 12 127 16"></polyline>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
