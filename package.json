@@ -5,7 +5,6 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    // "start": "webpack serve",
     "start": "node index.js",
     "server":"nodemon server",
     "build": "webpack"
