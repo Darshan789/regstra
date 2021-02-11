@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "react-scripts start",
 	"start": "serve -s build",
-	"build": "react-scripts build",
+	"build": "webpack",
 	"heroku-postbuild": "npm run build"
   },
   "keywords": [],
