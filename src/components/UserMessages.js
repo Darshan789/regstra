@@ -8,7 +8,7 @@ import Alert from "react-bootstrap/Alert";
 class UserMessages extends Component {
   srt = "/messaging";
   slash = "/";
-
+  msgCount = 0;
   gotId =
     location.pathname.replace(this.srt, "").search("/", "g") == 0
       ? location.pathname.replace(this.srt, "").replace("/", "")
@@ -26,8 +26,25 @@ class UserMessages extends Component {
       sentMsg: "",
       allData: [],
       msgWithData:[]  
-    };        
-    this.checkMessage();    
+    };
+    this.checkMessage();        
+    setInterval(() => {
+      this.checkMessage();  
+    }, 5000);        
+  }
+
+  UNSAFE_componentWillUpdate(){       
+    // $('#msgBox').click(function(){
+    //   console.log('clicked');
+    // });
+    // var count = 0;     
+    // $("#msgBox").on('keypress',(function(event) { 
+    //     if (event.keyCode === 13) { 
+    //         $("#sendBtn").trigger('click'); 
+    //         count++;
+    //     } 
+    // })
+    // );
   }
 
   // componentShouldUpdate(){
@@ -44,9 +61,12 @@ class UserMessages extends Component {
       body:JSON.stringify({userId:this.id})
     }).then((res)=>{
       res.json().then((user)=>{
-            user[0].messageReceived.forEach(message => {            
+        // console.log(user[0].messageReceived.length + user[0].messageSent.length);
+        if(this.msgCount < (user[0].messageReceived.length + user[0].messageSent.length)){                    
+          this.msgCount = (user[0].messageReceived.length + user[0].messageSent.length);
+          user[0].messageReceived.forEach(message => {            
             if(!users.includes(message.messagingFrom)){
-              users.push(message.messagingFrom);
+              users.push(message.messagingFrom);              
             }          
           });
           user[0].messageSent.forEach(message => {
@@ -58,7 +78,7 @@ class UserMessages extends Component {
               users.push(this.state.msgId);
           }
           this.setState({allData:user[0]});
-          if(users.length >= 1){
+          if(users.length >= 1){            
             users.forEach(user => {
                 fetch("http://localhost:4000/getBulkUsers",{
                 method:'POST',
@@ -66,10 +86,8 @@ class UserMessages extends Component {
                 body:JSON.stringify({userId:user})
                 }).then((res)=>{
                 res.json().then((data)=>{
-                  userDetails.push(data[0]);
-                  this.setState({users:userDetails});
-                  console.log(this.state.users);
-                  this.setState({msgWithData: this.state.allData.messageSent.concat(this.state.allData.messageReceived).sort((a,b) => (a.time > b.time) ? 1 : ((b.time > a.time) ? -1 : 0))});
+                  userDetails.push(data[0]);                  
+                  this.setState({users:userDetails});                                    
                   if(this.state.msgId != this.id){
                     this.setState({noconvo:false});
                   }                
@@ -81,7 +99,11 @@ class UserMessages extends Component {
                 });
               })
             });
+            if(typeof this.state.allData.messageSent != 'undefined'){
+              this.setState({msgWithData: this.state.allData.messageSent.concat(this.state.allData.messageReceived).sort((a,b) => (a.time > b.time) ? 1 : ((b.time > a.time) ? -1 : 0))});
+            }
           }
+        } 
       })
     });
   }
@@ -92,15 +114,15 @@ class UserMessages extends Component {
       headers:{'content-type':'application/json'},
       body:JSON.stringify({userId:this.id,senderId:this.state.msgId})
     }).then((res)=>{
-      console.log(res);
       res.json().then((data)=>{
-        console.log(data);
+        // console.log(data);        
       })
-    })
+    });    
   };
 
 
-  sendMessage = () => {
+  sendMessage = (event) => {
+    event.preventDefault();
     const currentDate = new Date();
     const timestamp = currentDate.getTime();
     if(this.state.sentMsg){      
@@ -118,11 +140,17 @@ class UserMessages extends Component {
         data.json().then((finalData) => {
             this.setState({isLoaded:true});
             document.getElementById('msgBox').value="";
+            this.setState({sentMsg:''});
             this.checkMessage();
         });
       });      
     }             
   }
+
+  selectUser = (event) =>{
+    this.setState({msgId : event.target.id});    
+  }
+
 
   timeToDate = (time) => {
     var date = new Date(time);
@@ -136,13 +164,13 @@ class UserMessages extends Component {
     let nam = event.target.name;
     let val = event.target.value;
     this.setState({ [nam]: val });  
-  };
+  };  
 
   render() {
     let myArr = [];
     let myOutput = [];
-    let MsgArr = [];       
-    const { users, isLoaded, error, msgId, noconvo, message, sentMsg, allData } = this.state;    
+    let MsgArr = [];            
+    const { users, isLoaded, error, msgId, noconvo, message, sentMsg, allData } = this.state;
     if (error) {
       myOutput.push(<div>Error: {error.message}</div>);
     } else if (!isLoaded) {
@@ -152,32 +180,42 @@ class UserMessages extends Component {
         </React.Fragment>
       );
     } else {
-      users.forEach((user)=>{            
-              myArr.push(
-                  <li key={user.userId} className={user.userId == msgId ? "flex-row-sb highlighted" : "flex-row-sb"}>
+      users.forEach((user)=>{   
+        if(typeof user != 'undefined'){
+          myArr.push(
+                  <li key={user.userId} id={user.userId} onClick={this.selectUser} className={user.userId == msgId ? "flex-row-sb highlighted" : "flex-row-sb"}>
                     <a href={`/messaging/${user.userId}`}>
                       <Image
                         src={"." + user.profilePic}
                         className="avatar mr-12"
                       />
                     </a>
-                    <div className="flex-col w-100pc">
-                      <div className="flex-row-sb w-100pc">
-                        <h4 className="m-0">{user.name}</h4>
-                        <time className="txt-grey">{(user.lastSentMessage.length >= 1 ? user.lastSentMessage[0].time : 1) > (user.lastReceivedMessage.length >= 1 ? user.lastReceivedMessage[0].time : 1) ? (user.lastSentMessage.length >= 1 ? this.timeToDate(user.lastSentMessage[0].time) : '' ) : (user.lastReceivedMessage.length >= 1 ? this.timeToDate(user.lastReceivedMessage[0].time) : '' )}</time>
+                    <div className="flex-col w-100pc" id={user.userId} onClick={this.selectUser}>
+                      <div className="flex-row-sb w-100pc" id={user.userId} onClick={this.selectUser}>
+                        <h4 className="m-0" id={user.userId} onClick={this.selectUser}>{user.name}</h4>
+                        <time className="txt-grey" id={user.userId} onClick={this.selectUser}>{(user.lastSentMessage.length >= 1 ? user.lastSentMessage[0].time : 1) > (user.lastReceivedMessage.length >= 1 ? user.lastReceivedMessage[0].time : 1) ? (user.lastSentMessage.length >= 1 ? this.timeToDate(user.lastSentMessage[0].time) : '' ) : (user.lastReceivedMessage.length >= 1 ? this.timeToDate(user.lastReceivedMessage[0].time) : '' )}</time>
                       </div>
-                      <p className="w-100pc m-0">{(user.lastSentMessage.length >= 1 ? user.lastSentMessage[0].time : 1) > (user.lastReceivedMessage.length >= 1 ? user.lastReceivedMessage[0].time : 1) ? (user.lastSentMessage.length >= 1 ? user.lastSentMessage[0].messages : '' ) : (user.lastReceivedMessage.length >= 1 ? user.lastReceivedMessage[0].messages : '' )}</p>
+                      <p className="w-100pc m-0" id={user.userId} onClick={this.selectUser}>{(user.lastSentMessage.length >= 1 ? user.lastSentMessage[0].time : 1) > (user.lastReceivedMessage.length >= 1 ? user.lastReceivedMessage[0].time : 1) ? (user.lastSentMessage.length >= 1 ? user.lastSentMessage[0].messages : '' ) : (user.lastReceivedMessage.length >= 1 ? user.lastReceivedMessage[0].messages : '' )}</p>
                       {/* user.lastSentMessage[0].time > user.lastReceivedMessage[0].time ? user.lastSentMessage[0].messages : user.lastReceivedMessage[0].messages */}
                       {/* <p className="w-100pc m-0">{user.sent.slice(-1)[0] }</p> */}
                     </div>                  
                   </li>
-            );          
+            );
+        }
+        else{
+          if(users.length >= 1 && typeof users[0] != 'undefined'){
+            location.replace('messaging/'+users[0].userId);
+          }
+          else{            
+            return;
+          }
+        }                                 
       }); 
       if (!noconvo) {
         // setInterval(() => {
         //     this.checkUnreadMsgs();
-        // }, 2000);                               
-        for (let i = this.state.msgWithData.length-1; i >=1 ; i--) {
+        // }, 2000);                   
+        for (let i = this.state.msgWithData.length-1; i >=0 ; i--) {
           // console.log(this.state.msgWithData[i].time);          
               if(this.state.msgWithData[i].messagingTo == msgId){
               MsgArr.push(
@@ -202,10 +240,11 @@ class UserMessages extends Component {
         myOutput.push(
           <React.Fragment>
             <aside className="panel" id="conversations">
-              <ul className="txt-s m-0">{myArr}</ul>
+              <ul className={myArr.length >= 1 ?"txt-s m-0" : "txt-s m-0 d-flex align-items-center justify-content-center h-100"}>{myArr.length >= 1 ? myArr:<h3>No Conversation</h3>}</ul>
             </aside>
             <div id="chat-input" className="panel">
               <div className="flex-row-sb">
+                <form onSubmit={this.sendMessage} method='POST' className="flex-row-sb" style={{margin:'0'}}>
                 <input
                   type="text"
                   name="sentMsg"
@@ -213,17 +252,19 @@ class UserMessages extends Component {
                   className="block"
                   id="msgBox"
                   onChange={this.myChangeHandler}
+                  style={{margin:'0'}}
                 />
-                <button onClick={this.sendMessage}> Send</button>
+                <button type="submit" id="sendBtn"> Send</button>
+                </form>
               </div>
             </div>
             <div id="chat-container" className="grid-fixed-auto">
-              <section className="flex-col-rev mt-20">
-                {MsgArr}                
+              <section className={MsgArr.length >= 1 ? "flex-col-rev mt-20":"flex-col-rev mt-20 d-flex align-items-center"}> 
+                {MsgArr.length >= 1 ? MsgArr:<h3>No Conversation</h3>}
               </section>
             </div>
           </React.Fragment>
-        );
+        );        
       } else {
         myOutput.push(
           <React.Fragment>
@@ -249,8 +290,8 @@ class UserMessages extends Component {
             </div>
           </React.Fragment>
         );
-      }
-    }
+      }    
+    }           
     return myOutput;
   }
 }

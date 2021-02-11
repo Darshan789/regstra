@@ -20,5 +20,11 @@
       $('.js-dropdown').removeClass('is-open');
     }
   });
+
+  $("#msgBox").keypress(function(event) { 
+        if (event.keyCode === 13) { 
+            $("#sendBtn").click(); 
+        } 
+    });
   
 })(jQuery, window, document);
