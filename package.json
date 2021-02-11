@@ -5,9 +5,10 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "webpack serve",
-    "server":"nodemon server",
-    "build": "webpack"
+    "dev": "react-scripts start",
+	"start": "serve -s build",
+	"build": "react-scripts build",
+	"heroku-postbuild": "npm run build"
   },
   "keywords": [],
   "author": "",
