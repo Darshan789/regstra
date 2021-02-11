@@ -1,6 +1,7 @@
 {
   "name": "react_project",
   "version": "1.0.0",
+  "homepage":"https://regestra.herokuapp.com/",
   "description": "",
   "main": "app.js",
   "scripts": {
