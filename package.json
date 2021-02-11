@@ -5,7 +5,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "webpack serve",
+    "start": "PORT=8080 node start ./server.js",
     "server":"nodemon server",
     "build": "webpack"
   },
