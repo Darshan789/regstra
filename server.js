@@ -14,9 +14,11 @@ const { count } = require("./src/models/users.model");
 const messagingModel = require("./src/models/messaging.model");
 const PORT = 4000;
 // app.use(bodyParser.json());
-app.use(bodyParser.json({ limit: "50mb" }));
+const router = express.Router();
 app.use('/.netlify/functions/server', router);
-app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
+
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }))
 
 app.use(express.static("./images"));
 var storage = multer.diskStorage({
@@ -367,3 +369,6 @@ app.post('/changereadstatus',function(req, res){
 app.listen(PORT, function () {
   console.log("Server is running on Port: " + PORT);
 });
+
+module.exports = app;
+module.exports.handler = serverless(app);
