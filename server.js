@@ -15,6 +15,7 @@ const messagingModel = require("./src/models/messaging.model");
 const PORT = 4000;
 // app.use(bodyParser.json());
 app.use(bodyParser.json({ limit: "50mb" }));
+app.use('/.netlify/functions/server', router);
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 
 app.use(express.static("./images"));
