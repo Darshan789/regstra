@@ -667,18 +667,24 @@ aside#conversations ul li > div {
 }
 .chat-box {
   border-radius: 32px;
-  margin-left: 50px;
-  margin-right: 6vw;
+  /* margin-left: 50px;
+  margin-right: 6vw; */
+  margin-bottom:0px;
   width: fit-content;
 }
 .chat-box p {
   margin: 0;
 }
-.chat-box::before {
-  content: "";
-  background-image: url("../images/user1.jpeg");
-  background-size: 100%;
-  border-radius: 50%;
+.chat-box-container{
+    display: flex;
+    align-items: center;
+    margin: 10px 0px;
+}
+.chat-box-before {
+  /* content: "";
+  background-image: url("../images/user1.jpeg"); */
+  /* background-size: 100%;
+  border-radius: 50%; */
   width: 33px;
   height: 33px;
   box-shadow: 0 4px 21px 0 rgba(19, 0, 72, 0.13);
@@ -693,6 +699,7 @@ aside#conversations ul li > div {
   align-self: flex-end;
   margin-left: calc(44px + 6vw);
   margin-right: 0;
+  margin: 10px 0px;
 }
 .my-chat-box::before {
   display: none;

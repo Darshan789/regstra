@@ -30,22 +30,23 @@ class UserMessages extends Component {
     this.checkMessage();        
     setInterval(() => {
       this.checkMessage();  
-    }, 5000);        
+    }, 5000);
+
   }
 
-  UNSAFE_componentWillUpdate(){       
-    // $('#msgBox').click(function(){
-    //   console.log('clicked');
-    // });
-    // var count = 0;     
-    // $("#msgBox").on('keypress',(function(event) { 
-    //     if (event.keyCode === 13) { 
-    //         $("#sendBtn").trigger('click'); 
-    //         count++;
-    //     } 
-    // })
-    // );
-  }
+  // UNSAFE_componentWillUpdate(){       
+  //   $('#msgBox').click(function(){
+  //     console.log('clicked');
+  //   });
+  //   var count = 0;     
+  //   $("#msgBox").on('keypress',(function(event) { 
+  //       if (event.keyCode === 13) { 
+  //           $("#sendBtn").trigger('click'); 
+  //           count++;
+  //       } 
+  //   })
+  //   );
+  // }
 
   // componentShouldUpdate(){
   //   console.log('HEllo');
@@ -169,7 +170,7 @@ class UserMessages extends Component {
   render() {
     let myArr = [];
     let myOutput = [];
-    let MsgArr = [];            
+    let MsgArr = [];                    
     const { users, isLoaded, error, msgId, noconvo, message, sentMsg, allData } = this.state;
     if (error) {
       myOutput.push(<div>Error: {error.message}</div>);
@@ -184,10 +185,12 @@ class UserMessages extends Component {
         if(typeof user != 'undefined'){
           myArr.push(
                   <li key={user.userId} id={user.userId} onClick={this.selectUser} className={user.userId == msgId ? "flex-row-sb highlighted" : "flex-row-sb"}>
-                    <a href={`/messaging/${user.userId}`}>
+                    <a id={user.userId} onClick={this.selectUser}>
                       <Image
                         src={"." + user.profilePic}
                         className="avatar mr-12"
+                        id={user.userId} 
+                        onClick={this.selectUser}
                       />
                     </a>
                     <div className="flex-col w-100pc" id={user.userId} onClick={this.selectUser}>
@@ -215,27 +218,41 @@ class UserMessages extends Component {
         // setInterval(() => {
         //     this.checkUnreadMsgs();
         // }, 2000);                   
-        for (let i = this.state.msgWithData.length-1; i >=0 ; i--) {
-          // console.log(this.state.msgWithData[i].time);          
-              if(this.state.msgWithData[i].messagingTo == msgId){
-              MsgArr.push(
-              <div className="panel chat-box my-chat-box">
-                <p>
-                  {this.state.msgWithData[i].messages}
-                </p>
-              </div>
-            ) 
-            }
-            if(this.state.msgWithData[i].messagingFrom == msgId){
-                MsgArr.push(
-                <div className="panel chat-box">
-                  <p>
-                    {this.state.msgWithData[i].messages}
-                  </p>
-                </div>
-              )          
-            }                     
-        }  
+        users.forEach(user => {
+          if(user.userId == msgId){
+              for (let i = this.state.msgWithData.length-1; i >=0 ; i--) {
+              // console.log(this.state.msgWithData[i].time);                   
+                  if(this.state.msgWithData[i].messagingTo == msgId){
+                  MsgArr.push(
+                  <div className="panel chat-box my-chat-box">
+                    <p>
+                      {this.state.msgWithData[i].messages}
+                    </p>
+                  </div>
+                ) 
+                }
+                if(this.state.msgWithData[i].messagingFrom == msgId){
+                    MsgArr.push(
+                    <div class="chat-box-container">                    
+                      <div>
+                        <Image
+                          src={"." + user.profilePic}
+                          className="avatar mr-12"
+                          id={user.userId} 
+                          onClick={this.selectUser}
+                        />
+                      </div>
+                      <div className="panel chat-box">                                       
+                        <p>
+                          {this.state.msgWithData[i].messages}
+                        </p>
+                      </div>
+                    </div>
+                  )
+                }
+            } 
+          }              
+        });          
 
         myOutput.push(
           <React.Fragment>
@@ -292,6 +309,8 @@ class UserMessages extends Component {
         );
       }    
     }           
+
+    // scrollH = document.querySelector('#chat-container').scrollHeight;
     return myOutput;
   }
 }

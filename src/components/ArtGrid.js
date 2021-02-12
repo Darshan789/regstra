@@ -406,7 +406,7 @@ class ArtGrid extends Component {
               this.props.filter.style ==
               post.postStyle.toLowerCase() &&
               this.props.filter.dimension == post.postDim)  
-            ) {
+            ) {              
                 outPutArr.push(
                   isLoggedIn ? (
                     <Alert variant="warning" dismissible>
@@ -513,7 +513,9 @@ class ArtGrid extends Component {
                                   {post.postLikes}
                                 </span>
                               </div>
-                              <div className="icon post ml-10"></div>
+                              <Link to={`/messaging/${post.userId}`}>
+                                <div className="icon post ml-10"></div>
+                              </Link>
                             </div>
                           </div>
                         </div>
@@ -653,7 +655,9 @@ class ArtGrid extends Component {
                                   {post.postLikes}
                                 </span>
                               </div>
-                              <div className="icon post ml-10"></div>
+                              <Link to={`/messaging/${post.userId}`}>
+                                  <div className="icon post ml-10"></div>
+                              </Link>
                             </div>
                           </div>
                         </div>
