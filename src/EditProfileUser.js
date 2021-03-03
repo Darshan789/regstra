@@ -133,7 +133,7 @@ class editProfileUser extends Component {
             style={{ backgroundImage: "url(" + this.state.coverPic + ")" }}
           >
             <div className="profile-info flex-col">
-              <button id="upload_cover">Upload cover image</button>
+              <button id="upload_cover" type="submit">Upload cover image</button>
               <input
                 type="file"
                 id="imgupload"

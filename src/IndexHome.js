@@ -6,13 +6,17 @@ import ArtGrid from "./components/ArtGrid";
 import Slider from "./components/Slider";
 
 class IndexHome extends Component {
+  id = localStorage.getItem('id');
   constructor(props) {
     super(props);
     this.state = {
       selectedValue: "",
       isLoaded: false,
-    };
+      id:this.id,      
+    };    
   }
+
+
   dropDownChanged = (selectedDropdown) => {
     if (selectedDropdown.type) {
       this.setState({ selectedValue: selectedDropdown });
@@ -38,7 +42,7 @@ class IndexHome extends Component {
             <DropDown selected={this.dropDownChanged} />
             <section className="art-grid">
               <div id="columns" className="p-0">
-                <ArtGrid filter={this.state.selectedValue} />
+                <ArtGrid filter={this.state.selectedValue} id={this.state.id}/>
               </div>
             </section>
           </main>
@@ -54,7 +58,7 @@ class IndexHome extends Component {
             <DropDown selected={this.dropDownChanged} />
             <section className="art-grid">
               <div id="columns" className="p-0">
-                <ArtGrid />
+                <ArtGrid id={this.state.id}/>
               </div>
             </section>
           </main>

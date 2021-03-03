@@ -50,7 +50,7 @@ class Login extends Component {
         localStorage.setItem("id", finalData.id);
         localStorage.setItem("userType", finalData.userType);
         if (localStorage.getItem("userType") != undefined) {
-          location.replace("/editprofile");
+          location.replace("/profile");
         }
       });
     });

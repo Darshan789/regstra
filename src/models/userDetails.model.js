@@ -17,6 +17,7 @@ userSchema = new Schema(
     followers: { type: Number },
     followedBy: { type: String },
     following: { type: String },
+    approved:{type:Boolean}
   },
   { versionKey: false }
 );

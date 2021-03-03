@@ -16,7 +16,10 @@ userSchema = new Schema(
     postTags: { type: String },
     postDesc: { type: String },
     postLikes: { type: Number },
+    artPostType : {type:String},
+    publish: {type: Boolean},
     likedBy: { type: String },
+    createdDate : {type : Date}
   },
   { versionKey: false }
 );

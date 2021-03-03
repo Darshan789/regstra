@@ -3,47 +3,68 @@ import Image from "react-bootstrap/Image";
 
 class DropDown extends Component {
   id = localStorage.getItem("id");
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
-      type:'',
-      style:'',
-      dimension:'',
-      isLoaded:false
-    }
+      type: "",
+      style: "",
+      dimension: "",
+      isLoaded: false,
+    };
   }
 
   typeValueSelected = (event) => {
     // console.log(event.target.data-dropdown-value);
-    this.setState({type:event.target.id});
-    this.setState({isLoaded:true});    
     event.preventDefault();
+    if (event.currentTarget.id == "all" && this.state.type != "") {
+      this.setState({ type: "a" });
+      this.setState({ isLoaded: true });
+    } else if (event.currentTarget.id != "all") {
+      this.setState({ type: event.currentTarget.id });
+      this.setState({ isLoaded: true });
+    } else {
+      this.setState({ isLoaded: true });
+    }
   };
 
   styleValueSelected = (event) => {
-    // this.props.selected({ style: event.target.id });
-    this.setState({style:event.target.id});        
-    this.setState({isLoaded:true});
+    // this.props.selected({ style: event.currentTarget.id });
     event.preventDefault();
+    if (event.currentTarget.id == "all" && this.state.style != "") {
+      this.setState({ style: "a" });
+      this.setState({ isLoaded: true });
+    } else if (event.currentTarget.id != "all") {
+      this.setState({ style: event.currentTarget.id });
+      this.setState({ isLoaded: true });
+    } else {
+      this.setState({ isLoaded: true });
+    }
   };
 
   dimensionValueSelected = (event) => {
-    // this.props.selected({ dimension: event.target.id });
-    this.setState({dimension:event.target.id});
-    this.setState({isLoaded:true});
+    // this.props.selected({ dimension: event.currentTarget.id });
     event.preventDefault();
+    if (event.currentTarget.id == "all" && this.state.dimension != "") {
+      this.setState({ dimension: "a" });
+      this.setState({ isLoaded: true });
+    } else if (event.currentTarget.id != "all") {
+      this.setState({ dimension: event.currentTarget.id });
+      this.setState({ isLoaded: true });
+    } else {
+      this.setState({ isLoaded: true });
+    }
   };
 
   setParentProp = () => {
     this.props.selected(this.state);
-  }
+  };
 
-  render() {    
+  render() {
     const pathname = window.location.pathname;
-    if(this.state.isLoaded){
+    if (this.state.isLoaded) {
       this.setParentProp();
-      this.setState({isLoaded:false});
-    }    
+      this.setState({ isLoaded: false });
+    }
     if (this.id == null) {
       return (
         <section className="stripe flex-row-c">
@@ -64,12 +85,20 @@ class DropDown extends Component {
     } else {
       return (
         <section className="stripe flex-row-c">
-          <div className="js-dropdown">
+          <div className="js-dropdown" id="filter_type">
             <div id="fltr-type" className="js-dropdown-current">
               Type
             </div>
             <div className="dropdown bl">
               <ul>
+                <li
+                  className="dropdown-item"
+                  data-dropdown-value="all"
+                  id="all"
+                  onClick={this.typeValueSelected}
+                >
+                  <p>All</p>
+                </li>
                 <li
                   className="dropdown-item"
                   data-dropdown-value="painting"
@@ -111,6 +140,14 @@ class DropDown extends Component {
             </div>
             <div className="dropdown bl">
               <ul>
+                <li
+                  className="dropdown-item"
+                  data-dropdown-value="all"
+                  id="all"
+                  onClick={this.styleValueSelected}
+                >
+                  <p>All</p>
+                </li>
                 <li
                   className="dropdown-item"
                   data-dropdown-value="abstract"
@@ -168,6 +205,14 @@ class DropDown extends Component {
             </div>
             <div className="dropdown bl">
               <ul>
+                <li
+                  className="dropdown-item"
+                  data-dropdown-value="all"
+                  onClick={this.dimensionValueSelected}
+                  id="all"
+                >
+                  <p>All</p>
+                </li>
                 <li
                   className="dropdown-item"
                   data-dropdown-value="small"

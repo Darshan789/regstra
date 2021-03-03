@@ -12,12 +12,15 @@ import DropDown from "./components/DropDown";
 import SocialBar from "./components/SocialBar";
 
 class forYou extends Component {
+  id = localStorage.getItem('id');
   constructor(props) {
     super(props);
     this.state = {
       selectedValue: "",
       isLoaded: false,
-    };
+      id:this.id,
+      approved:props.approved
+    };        
   }
   dropDownChanged = (selectedDropdown) => {
     if (selectedDropdown.type) {
@@ -44,7 +47,7 @@ class forYou extends Component {
           <DropDown selected={this.dropDownChanged}/>
           <section className="art-grid">
             <div id="columns" className="p-0">
-              <ArtGrid filter={this.state.selectedValue}/>
+              <ArtGrid filter={this.state.selectedValue} approved={this.state.approved} id={this.state.id}/>
             </div>
           </section>
           <SocialBar />
@@ -59,7 +62,7 @@ class forYou extends Component {
           <DropDown selected={this.dropDownChanged}/>
           <section className="art-grid">
             <div id="columns" className="p-0">
-              <ArtGrid />
+              <ArtGrid approved={this.state.approved} id={this.state.id}/>
             </div>
           </section>
           <SocialBar />

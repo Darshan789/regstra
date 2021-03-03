@@ -25,7 +25,9 @@ class UserMessages extends Component {
       noconvo: true,
       sentMsg: "",
       allData: [],
-      msgWithData:[]  
+      msgWithData:[],
+      isApproved:false,
+      show:false
     };
     this.checkMessage();        
     setInterval(() => {
@@ -51,6 +53,22 @@ class UserMessages extends Component {
   // componentShouldUpdate(){
   //   console.log('HEllo');
   // }
+
+  componentDidMount(){
+    fetch('http://localhost:4000/getUserDetails',{
+      method:'POST',
+      headers: { "content-type": "application/json" },
+      body:JSON.stringify({userId:this.id})
+    }).then((data)=>{
+      data.json().then((finalData)=>{
+        // console.log(finalData[0]);
+        this.setState({isApproved:finalData[0].approved});
+        if(!this.state.isApproved){
+          this.setState({show:true});
+        }
+      });
+    });
+  }
 
   checkMessage = () =>{
     let userMessages = [];
@@ -142,10 +160,30 @@ class UserMessages extends Component {
             this.setState({isLoaded:true});
             document.getElementById('msgBox').value="";
             this.setState({sentMsg:''});
+            this.pushNotifications(null,'msg',this.state.msgId);
             this.checkMessage();
         });
       });      
     }             
+  }
+
+    pushNotifications = (event, notificationType, to) => {    
+    let from = this.id;
+    let seen = false;
+    fetch('http://localhost:4000/postNotification',{
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+         to:to,         
+         from:from,
+         notificationType:notificationType,
+         seen:seen
+         }),
+    }).then((data)=>{
+      data.json().then((finalData)=>{
+        console.log(finalData);
+      })
+    });
   }
 
   selectUser = (event) =>{
@@ -166,15 +204,29 @@ class UserMessages extends Component {
     let val = event.target.value;
     this.setState({ [nam]: val });  
   };  
+  
+  approveAlert = () => {
+    // this.setState({show:true});
+    window.location.replace('/');    
+  }
 
   render() {
     let myArr = [];
     let myOutput = [];
     let MsgArr = [];                    
-    const { users, isLoaded, error, msgId, noconvo, message, sentMsg, allData } = this.state;
+    console.log(this.state);
+    const { users, isLoaded, error, msgId, noconvo, message, sentMsg, allData, isApproved, show } = this.state;
     if (error) {
       myOutput.push(<div>Error: {error.message}</div>);
-    } else if (!isLoaded) {
+    }
+    else if(show){
+      myOutput.push(<main>
+        <Alert variant="warning" onClose={()=>this.approveAlert()} dismissible>
+          <Alert.Heading>Waiting For Admin's Approval.</Alert.Heading>
+        </Alert>
+      </main>);
+    }
+     else if (!isLoaded) {
       myOutput.push(
         <React.Fragment>
           <Loader />
