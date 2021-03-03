@@ -2,12 +2,18 @@ import React, { Component } from "react";
 import DropDown from "./components/DropDown";
 import ArtGrid from "./components/ArtGrid";
 import SocialBar from "./components/SocialBar";
+
 class HomeContent extends Component {
-  constructor(props) {
+  id = localStorage.getItem('id');
+  constructor(props) {    
     super(props);
     this.state = {
       selectedValue: "",
       isLoaded: false,
+      userName : props.name,
+      id:this.id,
+      profilePic:props.profilePic,
+      approved :props.approved
     };
   }
   dropDownChanged = (selectedDropdown) => {
@@ -24,7 +30,6 @@ class HomeContent extends Component {
       this.setState({ isLoaded: true });
     }
     // this.setState({ selectedValue: selectedDropdown });
-    // console.log(selectedDropdown);
   };
   render() {
     if (this.state.isLoaded) {      
@@ -34,10 +39,10 @@ class HomeContent extends Component {
             <DropDown selected={this.dropDownChanged} />
             <section className="art-grid">
               <div id="columns" className="p-0">
-                <ArtGrid filter={this.state.selectedValue} />
+                <ArtGrid filter={this.state.selectedValue} approved={this.state.approved} id={this.state.id}/>
               </div>
             </section>
-            <SocialBar />
+            <SocialBar name={this.state.userName} approved={this.state.approved} profilePic={this.state.profilePic}/>
           </main>
         </React.Fragment>
       );
@@ -48,10 +53,10 @@ class HomeContent extends Component {
             <DropDown selected={this.dropDownChanged} />
             <section className="art-grid">
               <div id="columns" className="p-0">
-                <ArtGrid />
+                <ArtGrid approved={this.state.approved} id={this.state.id}/>
               </div>
             </section>
-            <SocialBar />
+            <SocialBar name={this.state.userName} approved={this.state.approved} profilePic={this.state.profilePic}/>
           </main>
         </React.Fragment>
       );

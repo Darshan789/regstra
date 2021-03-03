@@ -1,12 +1,12 @@
 {
   "name": "react_project",
   "version": "1.0.0",
-  "homepage":"https://regestra.herokuapp.com/",
+  "homepage": "https://regestra.herokuapp.com/",
   "description": "",
   "main": "app.js",
   "scripts": {
     "start": "webpack serve",
-    "server":"nodemon server",
+    "server": "nodemon server",
     "build": "webpack"
   },
   "keywords": [],
@@ -20,6 +20,7 @@
     "buffer": "^6.0.3",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "font-awesome": "^4.7.0",
     "kerberos": "^1.1.4",
     "md5": "^2.3.0",
     "mongodb": "^3.6.3",
@@ -33,6 +34,7 @@
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
     "rebuild": "^0.1.2",
+    "serverless-http": "^2.7.0",
     "util": "^0.12.3"
   },
   "devDependencies": {

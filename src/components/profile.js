@@ -7,7 +7,7 @@ class profile extends Component {
   userType = localStorage.getItem("userType");
   likeCount = 0;
   constructor(props) {
-    super(props);    
+    super(props);
     this.state = {
       userId: this.id,
       name: props.name,
@@ -22,24 +22,52 @@ class profile extends Component {
       profilePic: props.profilePic,
       coverPic: props.coverPic ? props.coverPic : "../images/image34.jpg",
       piecesOfArt: "",
+      socialPost: "",
       posts: [],
       postsView: "",
       isLoaded: false,
     };
     if (this.id) {
       this.getArtistPosts(this.id);
+      this.getUserDetails(this.id);
     }
   }
 
+  // componentDidMount () {
+  //   const script = document.createElement("script");
+  //   script.innerHTML = `$('input[type=""]').click(function(){
+  //     if($(this).prop("checked") == true){
+  //         console.log("Checkbox is checked.");
+  //     }
+  //     else if($(this).prop("checked") == false){
+  //         console.log("Checkbox is unchecked.");
+  //     }
+  //     console.log('clicked');
+  //   });`;
+  //   document.body.appendChild(script);
+  // }
+
+  getUserDetails = (id) => {
+    fetch("http://localhost:4000/getUserDetails", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ userId: id }),
+    }).then((res) =>
+      res.json().then((result) => {
+        // console.log(result);
+      })
+    );
+  };
+
   getArtistPosts = (id) => {
-    if (this.userType === "user2") {    
+    if (this.userType === "user2") {
       let followingUserArr = [];
       let finalArr = [];
       fetch("http://localhost:4000/getUserDetails", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ userId: this.id }),
-      }).then((res) =>      
+      }).then((res) =>
         res.json().then((result) => {
           //console.log(result);
           // if(result[0].following.split(",").length > 1){
@@ -56,7 +84,7 @@ class profile extends Component {
                     body: JSON.stringify({ userId: el }),
                   }).then((data) => {
                     data.json().then((finalData) => {
-                      console.log(finalData);
+                      // console.log(finalData);
                       finalData.forEach((final) => finalArr.push(final));
                       this.setState({
                         isLoaded: true,
@@ -79,7 +107,19 @@ class profile extends Component {
         body: JSON.stringify({ userId: id }),
       }).then((data) => {
         data.json().then((finalData) => {
-          this.setState({ piecesOfArt: finalData.length });
+          // this.setState({ piecesOfArt: finalData.length });
+          var lengthArt = 0;
+          var countSocialPost = 0;
+          finalData.forEach((post) => {
+            if (post.artPostType == "1") {
+              lengthArt++;
+              this.setState({ piecesOfArt: lengthArt });
+            }
+            if (post.artPostType == "2") {
+              countSocialPost++;
+              this.setState({ socialPost: countSocialPost });
+            }
+          });
           this.setState({ isLoaded: true });
           this.setState({ posts: finalData });
           // finalData.forEach((post) => {});
@@ -95,7 +135,6 @@ class profile extends Component {
       body: JSON.stringify({ postId: event.target.id }),
     }).then((res) =>
       res.json().then((result) => {
-        console.log(result[0]);
         var checkLike = new RegExp(this.id, "g");
         let isLiked = result[0].likedBy.search(checkLike);
 
@@ -169,10 +208,21 @@ class profile extends Component {
                 body: JSON.stringify({ userId: this.id }),
               }).then((data) => {
                 data.json().then((finalData) => {
-                  this.setState({ piecesOfArt: finalData.length });
+                  var lengthArt = 0;
+                  var countSocialPost = 0;
+                  // this.setState({ piecesOfArt: finalData.length });
                   this.setState({ isLoaded: true });
                   this.setState({ posts: finalData });
-                  // finalData.forEach((post) => {});
+                  finalData.forEach((post) => {
+                    if (post.artPostType === 1) {
+                      this.setState({ piecesOfArt: lengthArt });
+                      lengthArt++;
+                    }
+                    if (post.artPostType === 2) {
+                      this.setState({ socialPost: countSocialPost });
+                      countSocialPost++;
+                    }
+                  });
                 });
               });
             }
@@ -183,20 +233,182 @@ class profile extends Component {
   };
 
   render() {
-    console.log(this.state);
     if (!this.state.isLoaded) {
       return <Loader />;
     } else {
+      $('input[type="checkbox"]').click(function () {
+        $(".modal-wrapper").toggleClass("d-none");
+      });
       let ArtArr = [];
       let imgArr = [];
       let LikeArr = [];
+      let Tags = [];
+      this.state.posts.forEach((post) => {
+        if (post.postTags != "" && post.postTags != undefined) {
+          Tags.push(<span className="tag">{post.postTags}</span>);
+        }
+      });
       if (this.userType === "user2") {
-        var re = new RegExp(this.id, "g");        
+        var re = new RegExp(this.id, "g");
         this.state.posts.forEach((user) => {
           user.posts.forEach((post) => {
+            if (post.artPostType == 1) {
+              ArtArr.push(
+                <div className="modal-wrapper" key={post._id.toString()}>
+                  <figure className="painting abstract geometric large">
+                    <Image
+                      src={post.postImage ? post.postImage : <Loader />}
+                      className="open-modal"
+                    />
+                    <figcaption>
+                      <div>
+                        <span className="txt-grey">by </span>
+                        <a href="#">{post.userName}</a>
+                      </div>
+                      <div className="relative">
+                        <div
+                          className={
+                            post.likedBy.search(re) === -1
+                              ? "icon heart"
+                              : "icon heart-highlighted anim-pump"
+                          }
+                          id={post._id}
+                          name="like"
+                          onClick={this.myLikeHandler}
+                        ></div>
+                        <span
+                          className={
+                            post.likedBy.search(re) === -1
+                              ? "hearts-number hide"
+                              : "hearts-number"
+                          }
+                        >
+                          {post.postLikes}
+                        </span>
+                      </div>
+                    </figcaption>
+                  </figure>
+                  <div className="overlay d-block hide">
+                    <div className="modal panel d-block">
+                      <div className="panel-head">
+                        <div className="flex-row-sb w-100pc">
+                          <div className="flex-row-sb dropdown-element">
+                            <Image
+                              src={
+                                user.profilePic
+                                  ? user.profilePic
+                                  : "../images/avatar_default.png"
+                              }
+                              alt=""
+                              className="avatar"
+                            />
+                            <a href="joancox.html" className="no-decor">
+                              <div>
+                                <h3>{post.userName}</h3>
+                                <p>
+                                  {user.title ? user.title : "Registra User"}
+                                </p>
+                              </div>
+                            </a>
+                          </div>
+                          <div className="flex-row">
+                            <div className="relative flex-row">
+                              <div
+                                className={
+                                  post.likedBy.search(re) === -1
+                                    ? "icon heart"
+                                    : "icon heart-highlighted anim-pump"
+                                }
+                                id={post._id}
+                                name="like"
+                                onClick={this.myLikeHandler}
+                              ></div>
+                              <span
+                                className={
+                                  post.likedBy.search(re) === -1
+                                    ? "hearts-number hide"
+                                    : "hearts-number"
+                                }
+                              >
+                                {post.postLikes}
+                              </span>
+                            </div>
+                            <div className="icon post ml-10"></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="panel-body grid-67-33 grid-100-below768">
+                        <div>
+                          <Image src={post.postImage} className="w-100pc" />
+                        </div>
+                        <div>
+                          <h2 className="mt-0">"{post.postTitle}"</h2>
+                          <div className="grid-33-67-below768 grid-100-below480">
+                            <div className="mb-40 mb-0-below480">
+                              <p>{post.postType}</p>
+                              <p>
+                                {post.postLen} x {post.postWid} x
+                                {post.postHeight} in
+                              </p>
+                              {/* <p>121.9 x 182.9 x 3.8 cm</p> */}
+                            </div>
+                            <div className="mb-40 mb-20-below480">
+                              <h3>Description</h3>
+                              <p>{post.postDesc}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="close d-block"></div>
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+          });
+        });
+      } else {
+        this.state.posts.forEach((post) => {
+          LikeArr.push(post.postLikes);
+        });
+
+        let likeCount = LikeArr.reduce(function (acc, val) {
+          return acc + val;
+        }, 0);
+        this.state.posts.forEach((post) => {
+          if (imgArr.length >= 4) {
+            return;
+          }
+          imgArr.push(<Image src={post.postImage} className="img-thumbnail" />);
+        });
+        this.state.posts.forEach((post) => {
+          this.likeCount += post.postLikes;
+          var re = new RegExp(this.id, "g");
+
+          if (post.artPostType == 1) {
             ArtArr.push(
-              <div className="modal-wrapper" key={post._id.toString()}>
+              <div
+                className="modal-wrapper with_rounded_corner"
+                key={post._id.toString()}
+              >
                 <figure className="painting abstract geometric large">
+                  <div class="panel-head">
+                    <div class="flex-row-sb">
+                      <Image
+                        src={
+                          this.state.profilePic
+                            ? this.state.profilePic
+                            : "../images/avatar_default.png"
+                        }
+                        alt=""
+                        className="avatar"
+                      />
+                      <div>
+                        <h3>{this.state.name}</h3>
+                        <p>{this.state.title}</p>
+                      </div>
+                    </div>
+                  </div>
                   <Image
                     src={post.postImage ? post.postImage : <Loader />}
                     className="open-modal"
@@ -235,18 +447,18 @@ class profile extends Component {
                       <div className="flex-row-sb w-100pc">
                         <div className="flex-row-sb dropdown-element">
                           <Image
-                            src={
-                              user.profilePic
-                                ? user.profilePic
-                                : "../images/avatar_default.png"
-                            }
+                            src="../images/avatar_default.png"
                             alt=""
                             className="avatar"
                           />
                           <a href="joancox.html" className="no-decor">
                             <div>
                               <h3>{post.userName}</h3>
-                              <p>{user.title ? user.title : "Registra User"}</p>
+                              <p>
+                                {this.state.title
+                                  ? this.state.title
+                                  : "Registra User"}
+                              </p>
                             </div>
                           </a>
                         </div>
@@ -265,7 +477,7 @@ class profile extends Component {
                             <span
                               className={
                                 post.likedBy.search(re) === -1
-                                  ? "hearts-number hide"
+                                  ? "hearts-number"
                                   : "hearts-number"
                               }
                             >
@@ -303,134 +515,63 @@ class profile extends Component {
                 </div>
               </div>
             );
-          });
-        });
-      } else {
-        this.state.posts.forEach((post) => {
-          LikeArr.push(post.postLikes);
-        });
-        
-        let likeCount = LikeArr.reduce(function (acc, val) {
-          return acc + val;
-        }, 0);
-        this.state.posts.forEach((post) => {
-          if (imgArr.length >= 4) {
-            return;
-          }
-          imgArr.push(<Image src={post.postImage} className="img-thumbnail" />);
-        });
-        this.state.posts.forEach((post) => {
-          this.likeCount += post.postLikes;
-          var re = new RegExp(this.id, "g");
-          ArtArr.push(
-            <div className="modal-wrapper" key={post._id.toString()}>
-              <figure className="painting abstract geometric large">
-                <Image
-                  src={post.postImage ? post.postImage : <Loader />}
-                  className="open-modal"
-                />
-                <figcaption>
-                  <div>
-                    <span className="txt-grey">by </span>
-                    <a href="#">{post.userName}</a>
+          } else {
+            let displayStyle = "block";
+            let postImage = "";
+            if (post.postImage === "") {
+              displayStyle = "none";
+              postImage = "../images/articles/6.jpg";
+            } else {
+              postImage = post.postImage;
+            }
+            ArtArr.push(
+              <article class="panel">
+                <div class="panel-head">
+                  <div class="flex-row-sb">
+                    <Image
+                      src={
+                        this.state.profilePic
+                          ? this.state.profilePic
+                          : "../images/avatar_default.png"
+                      }
+                      alt=""
+                      className="avatar"
+                    />
+                    <div>
+                      <h3>{this.state.name}</h3>
+                      <p>{this.state.title}</p>
+                    </div>
                   </div>
-                  <div className="relative">
+                </div>
+                <div class="panel-body">
+                  <img src={postImage} />
+                  <h3>{post.postTitle}</h3>
+                  <p>{post.postDesc}</p>
+                </div>
+                <div class="panel-footer">
+                  <a href="#">Read more</a>
+                  <div class="relative">
                     <div
-                      className={
+                      class={
                         post.likedBy.search(re) === -1
                           ? "icon heart"
                           : "icon heart-highlighted anim-pump"
                       }
-                      id={post._id}
-                      name="like"
-                      onClick={this.myLikeHandler}
                     ></div>
                     <span
                       className={
                         post.likedBy.search(re) === -1
-                          ? "hearts-number hide"
+                          ? "hearts-number"
                           : "hearts-number"
                       }
                     >
                       {post.postLikes}
                     </span>
                   </div>
-                </figcaption>
-              </figure>
-              <div className="overlay d-block hide">
-                <div className="modal panel d-block">
-                  <div className="panel-head">
-                    <div className="flex-row-sb w-100pc">
-                      <div className="flex-row-sb dropdown-element">
-                        <Image
-                          src="../images/avatar_default.png"
-                          alt=""
-                          className="avatar"
-                        />
-                        <a href="joancox.html" className="no-decor">
-                          <div>
-                            <h3>{post.userName}</h3>
-                            <p>
-                              {this.state.title
-                                ? this.state.title
-                                : "Registra User"}
-                            </p>
-                          </div>
-                        </a>
-                      </div>
-                      <div className="flex-row">
-                        <div className="relative flex-row">
-                          <div
-                            className={
-                              post.likedBy.search(re) === -1
-                                ? "icon heart"
-                                : "icon heart-highlighted anim-pump"
-                            }
-                            id={post._id}
-                            name="like"
-                            onClick={this.myLikeHandler}
-                          ></div>
-                          <span
-                            className={
-                              post.likedBy.search(re) === -1
-                                ? "hearts-number hide"
-                                : "hearts-number"
-                            }
-                          >
-                            {post.postLikes}
-                          </span>
-                        </div>
-                        <div className="icon post ml-10"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="panel-body grid-67-33 grid-100-below768">
-                    <div>
-                      <Image src={post.postImage} className="w-100pc" />
-                    </div>
-                    <div>
-                      <h2 className="mt-0">"{post.postTitle}"</h2>
-                      <div className="grid-33-67-below768 grid-100-below480">
-                        <div className="mb-40 mb-0-below480">
-                          <p>{post.postType}</p>
-                          <p>
-                            {post.postLen} x {post.postWid} x{post.postHeight}{" "}
-                            in
-                          </p>
-                          {/* <p>121.9 x 182.9 x 3.8 cm</p> */}
-                        </div>
-                        <div className="mb-40 mb-20-below480">
-                          <h3>Description</h3>
-                          <p>{post.postDesc}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="close d-block"></div>
                 </div>
-              </div>
-            </div>
-          );
+              </article>
+            );
+          }
         });
       }
       return (
@@ -473,7 +614,9 @@ class profile extends Component {
                         <th>
                           {this.state.piecesOfArt ? this.state.piecesOfArt : 0}
                         </th>
-                        <th>0</th>
+                        <th>
+                          {this.state.socialPost ? this.state.socialPost : 0}
+                        </th>
                         <th>{this.likeCount}</th>
                       </tr>
                       <tr>
@@ -486,11 +629,7 @@ class profile extends Component {
                 </div>
                 <div className="flex-col">
                   <h3>Art Media</h3>
-                  <div>
-                    <span className="tag">Oil Painting</span>
-                    <span className="tag">Airbrush</span>
-                    <span className="tag">Oil Pastel</span>
-                  </div>
+                  <div>{Tags}</div>
                   <h3>On the web</h3>
                   <div>
                     <a href={this.state.behanceUrl}>
@@ -513,8 +652,6 @@ class profile extends Component {
                     type="checkbox"
                     id="checkbox-1"
                     className="articles-checkbox"
-                    checked="checked"
-                    readOnly
                   />
                   <label htmlFor="checkbox-1">
                     <span className="checkbox">

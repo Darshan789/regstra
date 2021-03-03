@@ -1,3 +1,5 @@
+// 'use strict';
+// const serverless = require('serverless-http');
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
@@ -12,10 +14,14 @@ const MessagesModel = require("./src/models/messaging.model");
 const postsModel = require("./src/models/posts.model");
 const { count } = require("./src/models/users.model");
 const messagingModel = require("./src/models/messaging.model");
+const notificationModel = require("./src/models/notifications.model");
 const PORT = 4000;
 // app.use(bodyParser.json());
+//const router = express.Router();
+// app.use('/.netlify/functions/server', router);
+
 app.use(bodyParser.json({ limit: "50mb" }));
-app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }))
 
 app.use(express.static("./images"));
 var storage = multer.diskStorage({
@@ -183,6 +189,22 @@ app.get("/getAllPosts", function (req, res) {
     .then((data) => {
       res.send(data);
     });
+});
+
+app.get("/getBlogPosts", function (req, res) {
+  postsModel.aggregate([
+    { $sort : {createdDate:-1} },
+    {
+      $lookup:
+        {
+          from: "userDetails",
+          localField: "userId",
+          foreignField: "userId",
+          as: "userData"
+        }
+   }
+ ]).then((data) => res.send(data));
+  // postsModel.find({artPostType:2},function(arr,data){res.send(data);}).sort({createdDate:-1});
 });
 
 app.post("/getLikeCounts", function (req, res) {
@@ -362,7 +384,126 @@ app.post('/changereadstatus',function(req, res){
   // console.log(count);
 });
 
+app.post('/postNotification', function(req,res){
+  let notifications = new notificationModel(req.body);
+  notifications.save()
+    .then((notification) => {
+      res.status(200).json({ message: "Notification Added Successfully", req: req.body });
+    })
+    .catch((err) => {
+      res.status(400).send("Notification Not Added Successfully");
+    });
+});
+
+app.post('/getNotifications', function(req,res){
+  // notificationModel.find({to:req.body.userId},function(err,data){
+  //   res.send(data);
+  // });
+  notificationModel.aggregate([
+      { $match: { to: req.body.userId } },
+      {
+        $lookup: {
+          from: "userDetails",
+          localField: "from",
+          foreignField: "userId",
+          as: "user",
+        },
+      },
+    ])
+    .then((data) => res.send(data));
+
+});
+
+app.post('/deleteNotification',function(req,res){
+  notificationModel.deleteOne({_id:req.body.id}).then((data)=>{
+    res.send(data);
+  })
+});
+
+app.post('/checkAdmin',function(req,res){
+  usersModel.find({ $and: [ { _id: req.body.id }, {type:'user0'} ] }).then((data)=>{
+    res.send(data);
+  })
+});
+
+// app.put('/updateAdminDetails',function())
+
+app.put("/updateAdminDetails", function (req, res) {
+  let users = new usersModel(req.body);
+  usersModel.updateOne(
+    { email: req.body.oldemail },
+    users,
+    function (err, data) {
+      res.send(data);
+    }
+  );
+});
+
+app.put('/approveUser',function(req,res){
+  let userDetails = new userDetailsModel(req.body);
+  userDetailsModel.updateOne(
+    { userId: req.body.userId },
+    req.body,
+    function (err, data) {
+      res.send(data);
+    }
+  );
+});
+
+app.put('/publishPost',function(req,res){  
+  postsModel.findByIdAndUpdate(req.body._id,
+    {$set:{publish:req.body.publish}},
+    function(err,data){
+      res.send(data);
+    }
+  )
+});
+
+app.post('/deletePost',function(req,res){
+  postsModel.deleteOne({_id:req.body._id},function(err,data){
+    res.send(data);
+  })
+});
+
+app.get('/getOnlyArtists',function(req,res){
+  userDetailsModel.aggregate([
+    {
+      $lookup: {
+        from: "users",        
+        let: { "id": "$userId"},
+        pipeline: [          
+          { $match: { $expr: { $eq: [ '$_id',{$toObjectId:"$$id"}] }}},
+          { $project: { type: 1 }}
+        ],
+        as: "user",
+      },
+    },  
+  ]).then((data)=>res.send(data));
+});
+
+
+app.get('/getOnlyPosts',function(req,res){
+  postsModel.find({artPostType:'1'},function(err,data){
+    res.send(data);
+  });
+});
+
+app.get('/getOnlyBlogPosts',function(req,res){  
+  // postsModel.find({artPostType:"2"},function(err,data){
+  //   res.send(data);
+  // })
+  postsModel.aggregate([
+    {$match:{artPostType:"2"}},
+    { $sort : {createdDate:-1}}
+  ]).then(data=>{
+    res.send(data);
+  });
+});
+
 
 app.listen(PORT, function () {
   console.log("Server is running on Port: " + PORT);
 });
+
+// module.exports = app;
+// module.exports.handler = serverless(app);

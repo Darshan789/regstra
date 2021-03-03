@@ -21,6 +21,8 @@ import AutoComplete from "./components/AutoComplete";
 import UserProfile from "./components/UserProfile";
 import AccountSettings from "./components/AccountSettings";
 import UserMessages from "./components/UserMessages";
+import Notifications from './components/Notifications';
+import Admin from './Admin';
 
 class MenuBar extends Component {
   id = localStorage.getItem("id");
@@ -42,9 +44,16 @@ class MenuBar extends Component {
       twitterUsername: "",
       profilePic: "",
       coverPic: "",
+      notifications:'',
+      approved:false,      
+      isLoaded:false
     };
     if (this.id != null) {
       this.getDetails();
+      // setInterval(() => {
+      //   this.getNotifications();
+      // }, 5000);      
+      // this.getNotifications();
     }
     if (this.counter == 0) {
       this.getSuggestions();
@@ -71,6 +80,24 @@ class MenuBar extends Component {
       });
     });
   };
+
+  // getNotifications = () => {
+  //   fetch('http://localhost:4000/getNotifications',{
+  //     method:'POST',
+  //     headers:{
+  //       "Content-Type": "application/json",
+  //     },
+  //     body:JSON.stringify({userId:this.id})
+  //   }).then((data)=>{
+  //     data.json().then((notifications)=>{
+  //       if(this.state.notifications.length < notifications.length){
+  //         this.setState({notifications:notifications});
+  //         this.setState({isLoaded:true});
+  //       }        
+  //       console.log(notifications);
+  //     });
+  //   });
+  // }
 
   submitHandler = (event) => {
     if (typeof event != "undefined") {
@@ -110,26 +137,45 @@ class MenuBar extends Component {
     // console.log(this.suggestArray);
   };
   render() {
+    console.log('IsApproved:',this.state.approved);
     let menuItem;
+    // let notifications = [];
+    // if(this.state.isLoaded){
+    //   this.state.notifications.forEach((notification)=>{
+    //     if(notification.notificationType == 'like'){
+    //       notifications.push(          
+    //         <li>
+    //           <a href="#">
+    //             <span className="icon heart-highlighted mr-12"></span>
+    //             <p className="m-0">
+    //               <strong>{notification.user[0].name}</strong> liked your post
+    //             </p>
+    //           </a>
+    //         </li>
+    //       );   
+    //     }        
+    //   });
+    // }
     if (this.id != null) {
       menuItem = (
-        <ul>
+        <ul style={{width:this.state.approved ? "" : "200px"}}>
           <li>
             <Link to="/home">Home</Link>
           </li>
-          <li>
-            <Link to="/youfor">For you</Link>
+          <li style={{display:this.state.approved ? "" : "none"}}>
+            <Link to="/youfor"            
+            >For you</Link>
           </li>
           {this.userType === "user2" ? (
             ""
           ) : (
-            <li>
+            <li style={{display:this.state.approved ? "" : "none"}}>
               <Link to="/upload">
                 <span className="icon upload"></span>
               </Link>
             </li>
           )}
-          <li>
+          <li style={{display:this.state.approved ? "" : "none"}}>
             <Nav.Link href="/messaging">
               <span className="icon message"></span>
             </Nav.Link>
@@ -137,8 +183,10 @@ class MenuBar extends Component {
           <li id="notifications-list" className="dropdown-element">
             <Nav.Link href="#">
               <span className="icon bell"></span>
-              <div className="dropdown">
+              <Notifications/>
+              {/* <div className="dropdown">
                 <ul>
+                {notifications}
                   <li>
                     <a href="#">
                       <span className="icon heart-highlighted mr-12"></span>
@@ -226,7 +274,7 @@ class MenuBar extends Component {
                     </a>
                   </li>
                 </ul>
-              </div>
+              </div> */}
             </Nav.Link>
           </li>
           <li className="dropdown-element" id="profile_list">
@@ -279,33 +327,102 @@ class MenuBar extends Component {
         </ul>
       );
     }
-    return (
-      <BrowserRouter>
-        <Navbar>
-          <div>
-            <Link to="/">
-              <div
-                id="logo"
-                className="logo d-flex align-items-center justify-content-center"
-              >
-                <Image src="../images/regestra_logo-1.svg" className="w-auto" />
-              </div>
-            </Link>
-            <AutoComplete
-              suggestions={
-                typeof this.suggestArray == "undefined" ? "" : this.suggestArray
-              }
-            />
-          </div>
-          {menuItem}
-        </Navbar>
+    if(location.pathname != '/admin'){
+      return (
+        <BrowserRouter>
+          <Navbar>
+            <div>
+              <Link to="/">
+                <div
+                  id="logo"
+                  className="logo d-flex align-items-center justify-content-center"
+                >
+                  <Image src="../images/regestra_logo-1.svg" className="w-auto" />
+                </div>
+              </Link>
+              <AutoComplete
+                suggestions={
+                  typeof this.suggestArray == "undefined" ? "" : this.suggestArray
+                }
+              />
+            </div>
+            {menuItem}
+          </Navbar>
 
+          <Switch>
+            <Route path="/" exact>
+              <IndexHome approved={this.state.approved}/>
+            </Route>
+            <Route path="/home" component={() => <HomeContent name={this.state.name} profilePic={this.state.profilePic} approved={this.state.approved}/>}>
+            </Route>
+            <Route path="/youfor" component={() => <ForYou approved={this.state.approved}/>} />
+            {/*  */}
+            <Route
+              path="/profile"
+              component={() => (
+                <Profile
+                  name={this.state.name}
+                  title={this.state.title}
+                  location={this.state.location}
+                  websiteUrl={this.state.websiteUrl}
+                  bio={this.state.bio}
+                  behanceUrl={this.state.behanceUrl}
+                  dribbleUsername={this.state.dribbleUsername}
+                  mediumUrl={this.state.mediumUrl}
+                  twitterUsername={this.state.twitterUsername}
+                  profilePic={this.state.profilePic}
+                  coverPic={this.state.coverPic}
+                />
+              )}
+            />
+            <Route
+              path="/accsettings"
+              component={() => <AccountSettings title={this.state.title} />}
+            />
+            <Route
+              path="/upload"
+              component={() => <ArtUpload name={this.state.name}  approved={this.state.approved}/>}
+            />
+            <Route
+              path="/editProfile"
+              component={() => (
+                <EditProfileUser
+                  name={this.state.name}
+                  title={this.state.title}
+                  location={this.state.location}
+                  websiteUrl={this.state.websiteUrl}
+                  bio={this.state.bio}
+                  behanceUrl={this.state.behanceUrl}
+                  dribbleUsername={this.state.dribbleUsername}
+                  mediumUrl={this.state.mediumUrl}
+                  twitterUsername={this.state.twitterUsername}
+                  profilePic={this.state.profilePic}
+                  coverPic={this.state.coverPic}
+                />
+              )}
+            />
+            <Route
+              path="/messaging"
+              component={() => <Messages data={this.state} />}
+            />
+            <Route 
+              path='/admin'
+              component = {()=> <Admin/>}
+            />
+            <Route exact path="/messaging/:id" render={UserMessages} />
+            <Route path="/:id" component={UserProfile} />          
+          </Switch>
+        </BrowserRouter>
+      );
+    }
+    else{
+      return (
+      <BrowserRouter>        
         <Switch>
           <Route path="/" exact>
             <IndexHome />
           </Route>
-          <Route path="/home" exact>
-            <HomeContent />
+          <Route path="/home" component={() => <HomeContent name={this.state.name} profilePic={this.state.profilePic}/>}>
           </Route>
           <Route path="/youfor" component={() => <ForYou />} />
           {/*  */}
@@ -357,11 +474,16 @@ class MenuBar extends Component {
             path="/messaging"
             component={() => <Messages data={this.state} />}
           />
+          <Route 
+            path='/admin'
+            component = {()=> <Admin/>}
+          />
           <Route exact path="/messaging/:id" render={UserMessages} />
-          <Route path="/:id" component={UserProfile} />
+          <Route path="/:id" component={() => <UserProfile approved={this.state.approved}/>} />          
         </Switch>
       </BrowserRouter>
     );
+    }    
   }
 }
 
