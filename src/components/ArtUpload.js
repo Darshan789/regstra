@@ -29,6 +29,7 @@ class ArtUpload extends Component {
       previewImage: "",
       publish:false,
       approved:props.approved,
+      artPostType:'1',
       isTags: false,
     };
 

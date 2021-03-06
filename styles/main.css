@@ -1858,3 +1858,53 @@ form .suggestions option {
   font-weight: bold;
   line-height: 1.235;
 }
+
+.admin-login main{
+  min-height: calc(100vh - 480px);
+}
+
+.admin-login .loader-main{
+  background:transparent;
+}
+
+.normal-login main{
+  min-height: 0;
+}
+
+.admin-login .close::after{
+  display:none;
+}
+
+.normal-login .close::after{
+  display:none;
+}
+
+/* section{
+  margin-bottom: 0px;
+} */
+
+.profile-main{
+  margin-bottom:0;
+}
+
+.profile-main .art-grid{
+  margin-bottom:0;
+}
+
+.suggestions{
+  position: fixed;
+    top: 43px;
+    background: rgb(255 255 255);
+    left: 72px;
+    padding: 0;
+    box-shadow: 0 1px 1px rgb(19 0 72 / 13%);
+    width: 23vw;
+    padding: 0px 0px;
+    display: block;
+}
+
+.suggestions li{
+  margin-bottom: 5px;
+  padding: 5px 10px;
+  color: var(--purple);
+}

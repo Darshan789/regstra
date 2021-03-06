@@ -23,6 +23,7 @@ import AccountSettings from "./components/AccountSettings";
 import UserMessages from "./components/UserMessages";
 import Notifications from './components/Notifications';
 import Admin from './Admin';
+import PasswordReset from './components/PasswordReset';
 
 class MenuBar extends Component {
   id = localStorage.getItem("id");
@@ -46,7 +47,8 @@ class MenuBar extends Component {
       coverPic: "",
       notifications:'',
       approved:false,      
-      isLoaded:false
+      isLoaded:false,
+      suggestArray:[]
     };
     if (this.id != null) {
       this.getDetails();
@@ -129,7 +131,8 @@ class MenuBar extends Component {
     //suggestArray = ["Apple", "Mango", "Pomgranate", "Olay"];
     fetch("http://localhost:4000/getArtists").then((res) => {
       res.json().then((data) => {
-        data.forEach((element) => {
+        // console.log(data);
+        data.forEach((element) => {          
           this.suggestArray.push(element);
         });
       });
@@ -355,7 +358,7 @@ class MenuBar extends Component {
             </Route>
             <Route path="/home" component={() => <HomeContent name={this.state.name} profilePic={this.state.profilePic} approved={this.state.approved}/>}>
             </Route>
-            <Route path="/youfor" component={() => <ForYou approved={this.state.approved}/>} />
+            <Route path="/youfor" component={() => <ForYou approved={this.state.approved} name={this.state.name} profilePic={this.state.profilePic} />} />
             {/*  */}
             <Route
               path="/profile"
@@ -422,6 +425,10 @@ class MenuBar extends Component {
           <Route path="/" exact>
             <IndexHome />
           </Route>
+          <Route
+            path='/forgotpassword'
+            component = {() => <PasswordReset/>}
+          ></Route>
           <Route path="/home" component={() => <HomeContent name={this.state.name} profilePic={this.state.profilePic}/>}>
           </Route>
           <Route path="/youfor" component={() => <ForYou />} />
@@ -477,7 +484,7 @@ class MenuBar extends Component {
           <Route 
             path='/admin'
             component = {()=> <Admin/>}
-          />
+          />          
           <Route exact path="/messaging/:id" render={UserMessages} />
           <Route path="/:id" component={() => <UserProfile approved={this.state.approved}/>} />          
         </Switch>

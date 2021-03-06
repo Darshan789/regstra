@@ -19,7 +19,9 @@ class forYou extends Component {
       selectedValue: "",
       isLoaded: false,
       id:this.id,
-      approved:props.approved
+      approved:props.approved,
+      name:props.name,
+      profilePic:props.profilePic
     };        
   }
   dropDownChanged = (selectedDropdown) => {
@@ -50,7 +52,7 @@ class forYou extends Component {
               <ArtGrid filter={this.state.selectedValue} approved={this.state.approved} id={this.state.id}/>
             </div>
           </section>
-          <SocialBar />
+          <SocialBar name={this.state.userName} approved={this.state.approved} profilePic={this.state.profilePic}/>
         </main>
       </React.Fragment>
     );
@@ -65,7 +67,7 @@ class forYou extends Component {
               <ArtGrid approved={this.state.approved} id={this.state.id}/>
             </div>
           </section>
-          <SocialBar />
+          <SocialBar name={this.state.userName} approved={this.state.approved} profilePic={this.state.profilePic}/>
         </main>
       </React.Fragment>
     );

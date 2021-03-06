@@ -24,6 +24,7 @@ class editProfileUser extends Component {
       followers: 0,
       followedBy: "",
       following: "",
+      previewCover:props.coverPic,
     };
   }
 
@@ -35,6 +36,8 @@ class editProfileUser extends Component {
 
   updateProfile(event) {
     console.log(this.state);
+    this.setState({ previewCover: "" });
+    delete this.state.previewCover;
     if (typeof event != "undefined") {
       event.preventDefault();
     }
@@ -109,6 +112,11 @@ class editProfileUser extends Component {
 
   coverPicUpload = (event) => {
     let images = [];
+    let reader = new FileReader();
+    reader.readAsDataURL(event.target.files[0]);
+    reader.onload = () => {
+      this.setState({ previewCover: reader.result.toString() });
+    };
     for (var i = 0; i < event.target.files.length; i++) {
       images[i] = event.target.files.item(i);
     }
@@ -117,6 +125,7 @@ class editProfileUser extends Component {
     );
     // let message = `${images.length} valid image(s) selected`;
     this.setState({ coverPic: images });
+    console.log(this.state.coverPic);
   };
 
   myChangeHandler = (event) => {
@@ -130,7 +139,7 @@ class editProfileUser extends Component {
         <main>
           <div
             className="profile-head bg-photo34"
-            style={{ backgroundImage: "url(" + this.state.coverPic + ")" }}
+            style={{ backgroundImage: "url(" + this.state.previewCover + ")" }}
           >
             <div className="profile-info flex-col">
               <button id="upload_cover" type="submit">Upload cover image</button>

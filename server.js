@@ -7,6 +7,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const multer = require("multer");
 const { Db } = require("mongodb");
+const nodemailer = require("nodemailer");
 const usersModel = require("./src/models/users.model");
 const { json } = require("body-parser");
 const userDetailsModel = require("./src/models/userDetails.model");
@@ -497,6 +498,34 @@ app.get('/getOnlyBlogPosts',function(req,res){
     { $sort : {createdDate:-1}}
   ]).then(data=>{
     res.send(data);
+  });
+});
+
+app.post('/sendOtp',function(req,res){  
+
+  // create reusable transporter object using the default SMTP transport
+  let transporter = nodemailer.createTransport({
+    service:'gmail',
+    auth:{
+      user:'regestra.mailer@gmail.com',
+      pass:'Jack@789'
+    }
+  });
+
+  let mailOptions ={
+    from:"'Regestra' <regestra.mailer@gmail.com>",
+    to:req.body.email,
+    subject:'OTP',
+    html:'<div align="center"><h1>OTP</h1></br><b>'+req.body.otp+'</b></div>'
+  }
+
+  transporter.sendMail(mailOptions, function(err,data){
+    if(err){
+      res.send(err);
+    }
+    else{
+      res.send(data);
+    }
   });
 });
 

@@ -576,7 +576,7 @@ class profile extends Component {
       }
       return (
         <React.Fragment>
-          <main>
+          <main class="profile-main">
             <div
               className="profile-head bg-photo34"
               style={{ backgroundImage: 'url("' + this.state.coverPic + '")' }}

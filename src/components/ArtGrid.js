@@ -66,28 +66,60 @@ class ArtGrid extends Component {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ userId: this.state.id }),
       }).then((res) =>
-        res.json().then((result) => {
+        res.json().then((result) => {                    
           followingUserArr.push(result[0].following.split(","));
           followingUserArr.forEach((element) => {
             if (element !== "") {
               element.forEach((el) => {
-                el = el.trim();
+                el = el.trim();                
                 if (el != "") {
-                  fetch("http://localhost:4000/getPostsSingleArtist", {
+                  fetch("http://localhost:4000/getUserDetails", {
                     method: "POST",
                     headers: { "content-type": "application/json" },
                     body: JSON.stringify({ userId: el }),
                   }).then((data) => {
-                    data.json().then((finalData) => {
-                      finalData.forEach((final) => finalArr.push(final));
-                      this.setState({
-                        isLoaded: true,
-                        items: finalArr,
-                        isShuffle: true,
+                    data.json().then((user) => {                      
+                      fetch("http://localhost:4000/getPostsSingleArtist", {
+                        method: "POST",
+                        headers: { "content-type": "application/json" },
+                        body: JSON.stringify({ userId: el }),
+                      }).then((data) => {
+                        data.json().then((finalData) => {                      
+                          finalData.forEach((final) => {
+                            final.user = user[0];
+                            finalArr.push(final);
+                          });
+                          this.setState({
+                            isLoaded: true,
+                            items: finalArr,
+                            isShuffle: true,
+                          });
+                        });
                       });
+                      // finalData.forEach((final) => finalArr.push(final));                      
+                      // this.setState({
+                      //   isLoaded: true,
+                      //   items: finalArr,
+                      //   isShuffle: true,
+                      // });
                     });
                   });
-                }
+                  // console.log(el);                  
+                  // fetch("http://localhost:4000/getPostsSingleArtist", {
+                  //   method: "POST",
+                  //   headers: { "content-type": "application/json" },
+                  //   body: JSON.stringify({ userId: el }),
+                  // }).then((data) => {
+                  //   data.json().then((finalData) => {                      
+                  //     finalData.forEach((final) => finalArr.push(final));                      
+                  //     this.setState({
+                  //       isLoaded: true,
+                  //       items: finalArr,
+                  //       isShuffle: true,
+                  //     });
+                  //   });
+                  // });
+                } 
               });
             }
           });
@@ -97,8 +129,7 @@ class ArtGrid extends Component {
       fetch("http://localhost:4000/getAllPosts")
         .then((res) => res.json())
         .then(
-          (result) => {
-            // console.log(result);
+          (result) => {            
             this.setState({
               isLoaded: true,
               items: result,
@@ -179,7 +210,6 @@ class ArtGrid extends Component {
                     result[0].followedBy += "," + this.state.id;
                     this.pushNotifications(event, 'follow', result[0].userId);
                   }
-
                   result[0].followers = ++result[0].followers;
                 }
                 fetch("http://localhost:4000/followed", {
@@ -217,27 +247,52 @@ class ArtGrid extends Component {
                                   element.forEach((el) => {
                                     el = el.trim();
                                     if (el != "") {
-                                      fetch(
-                                        "http://localhost:4000/getPostsSingleArtist",
-                                        {
-                                          method: "POST",
-                                          headers: {
-                                            "content-type": "application/json",
-                                          },
-                                          body: JSON.stringify({ userId: el }),
-                                        }
-                                      ).then((data) => {
-                                        data.json().then((finalData) => {
-                                          finalData.forEach((final) =>
-                                            finalArr.push(final)
-                                          );
-                                          this.setState({
-                                            isLoaded: true,
-                                            items: finalArr,
-                                            isShuffle: true,
+                                      fetch("http://localhost:4000/getUserDetails", {
+                                        method: "POST",
+                                        headers: { "content-type": "application/json" },
+                                        body: JSON.stringify({ userId: el }),
+                                      }).then((data) => {
+                                        data.json().then((user) => {                      
+                                          fetch("http://localhost:4000/getPostsSingleArtist", {
+                                            method: "POST",
+                                            headers: { "content-type": "application/json" },
+                                            body: JSON.stringify({ userId: el }),
+                                          }).then((data) => {
+                                            data.json().then((finalData) => {                      
+                                              finalData.forEach((final) => {
+                                                final.user = user[0];
+                                                finalArr.push(final);
+                                              });
+                                              this.setState({
+                                                isLoaded: true,
+                                                items: finalArr,
+                                                isShuffle: true,
+                                              });
+                                            });
                                           });
+                                          // finalData.forEach((final) => finalArr.push(final));                      
+                                          // this.setState({
+                                          //   isLoaded: true,
+                                          //   items: finalArr,
+                                          //   isShuffle: true,
+                                          // });
                                         });
                                       });
+                                      // console.log(el);                  
+                                      // fetch("http://localhost:4000/getPostsSingleArtist", {
+                                      //   method: "POST",
+                                      //   headers: { "content-type": "application/json" },
+                                      //   body: JSON.stringify({ userId: el }),
+                                      // }).then((data) => {
+                                      //   data.json().then((finalData) => {                      
+                                      //     finalData.forEach((final) => finalArr.push(final));                      
+                                      //     this.setState({
+                                      //       isLoaded: true,
+                                      //       items: finalArr,
+                                      //       isShuffle: true,
+                                      //     });
+                                      //   });
+                                      // });
                                     }
                                   });
                                 }
@@ -326,31 +381,59 @@ class ArtGrid extends Component {
                   body: JSON.stringify({ userId: this.state.id }),
                 }).then((res) =>
                   res.json().then((result) => {
+                    // console.log(result);
                     followingUserArr.push(result[0].following.split(","));
                     followingUserArr.forEach((element) => {
                       if (element !== "") {
                         element.forEach((el) => {
                           el = el.trim();
                           if (el != "") {
-                            fetch(
-                              "http://localhost:4000/getPostsSingleArtist",
-                              {
-                                method: "POST",
-                                headers: { "content-type": "application/json" },
-                                body: JSON.stringify({ userId: el }),
-                              }
-                            ).then((data) => {
-                              data.json().then((finalData) => {
-                                finalData.forEach((final) =>
-                                  finalArr.push(final)
-                                );                                
-                                this.setState({
-                                  isLoaded: true,
-                                  items: finalArr,
-                                  isShuffle: true,
+                            fetch("http://localhost:4000/getUserDetails", {
+                              method: "POST",
+                              headers: { "content-type": "application/json" },
+                              body: JSON.stringify({ userId: el }),
+                            }).then((data) => {
+                              data.json().then((user) => {                      
+                                fetch("http://localhost:4000/getPostsSingleArtist", {
+                                  method: "POST",
+                                  headers: { "content-type": "application/json" },
+                                  body: JSON.stringify({ userId: el }),
+                                }).then((data) => {
+                                  data.json().then((finalData) => {                      
+                                    finalData.forEach((final) => {
+                                      final.user = user[0];
+                                      finalArr.push(final);
+                                    });
+                                    this.setState({
+                                      isLoaded: true,
+                                      items: finalArr,
+                                      isShuffle: true,
+                                    });
+                                  });
                                 });
+                                // finalData.forEach((final) => finalArr.push(final));                      
+                                // this.setState({
+                                //   isLoaded: true,
+                                //   items: finalArr,
+                                //   isShuffle: true,
+                                // });
                               });
                             });
+                            // console.log(el);                  
+                            // fetch("http://localhost:4000/getPostsSingleArtist", {
+                            //   method: "POST",
+                            //   headers: { "content-type": "application/json" },
+                            //   body: JSON.stringify({ userId: el }),
+                            // }).then((data) => {
+                            //   data.json().then((finalData) => {                      
+                            //     finalData.forEach((final) => finalArr.push(final));                      
+                            //     this.setState({
+                            //       isLoaded: true,
+                            //       items: finalArr,
+                            //       isShuffle: true,
+                            //     });
+                            //   });
+                            // });
                           }
                         });
                       }
@@ -412,11 +495,11 @@ class ArtGrid extends Component {
   //   </Alert>}); 
   }
 
-  render() {    
+  render() {        
     let outPutArr = [];
     outPutArr.push(<Button id="signup-btn" className="purple-grad" style={{display:'none'}}>
               Sign Up
-            </Button>);
+            </Button>);    
     const { error, isLoaded, items, isShuffle, show, isApproved } = this.state;
      let type,style,dimension;     
     if(this.props.filter){      
@@ -432,16 +515,17 @@ class ArtGrid extends Component {
           <Loader />
         </React.Fragment>
       );
-    } else {
+    } else {      
       if (isShuffle) {
         this.shuffleArray();
       }
-      if (this.pathname === "/youfor") {
+      if (this.pathname === "/youfor") {        
         items.forEach((post) => {
           let imgArr = [];
           imgArr.push(<Image src={post.postImage} className="img-thumbnail" />);
         });
         items.forEach((post) => {
+          console.log(post);
           var checkLike = new RegExp(this.state.id, "g");
           let isLiked = post.likedBy.search(checkLike);
           let className = "login-trigger icon heart";
@@ -497,23 +581,27 @@ class ArtGrid extends Component {
                               <div className="flex-row-sb">
                                 <Image
                                   src={
-                                    this.state.profilePic
-                                      ? this.state.profilePic
+                                    post.user.profilePic
+                                      ? post.user.profilePic
                                       : "../images/avatar_default.png"
                                   }
                                   alt=""
                                   className="avatar"
                                 />
-                                <a href="joancox.html" className="no-decor">
+                                <Link to={this.state.isLoggedIn ?`/${post.userId}`:''}
+                                  onClick={this.state.isLoggedIn ? null : this.loginAlert}
+                                  className="no-decor"
+                                >
+                                  {post.userName}
                                   <div>
                                     <h3>{post.userName}</h3>
                                     <p>
-                                      {this.state.title
-                                        ? this.state.title
+                                      {post.user.title
+                                        ? post.user.title
                                         : "Registra User"}
                                     </p>
                                   </div>
-                                </a>
+                                </Link>
                                 <div className="dropdown br">
                                   <div className="flex-row-sb mb-15">
                                     <div className="flex-row-sb">
@@ -649,23 +737,26 @@ class ArtGrid extends Component {
                               <div className="flex-row-sb">
                                 <Image
                                   src={
-                                    this.state.profilePic
+                                    post.user.profilePic
                                       ? this.state.profilePic
                                       : "../images/avatar_default.png"
                                   }
                                   alt=""
                                   className="avatar"
                                 />
-                                <a href="joancox.html" className="no-decor">
+                                <Link to={this.state.isLoggedIn ?`/${post.userId}`:''}
+                                  onClick={this.state.isLoggedIn ? null : this.loginAlert}
+                                  className="no-decor"
+                                >
                                   <div>
                                     <h3>{post.userName}</h3>
                                     <p>
-                                      {this.state.title
-                                        ? this.state.title
+                                      {post.user.title
+                                        ? post.user.title
                                         : "Registra User"}
                                     </p>
                                   </div>
-                                </a>
+                                </Link>
                                 <div className="dropdown br">
                                   <div className="flex-row-sb mb-15">
                                     <div className="flex-row-sb">
@@ -784,23 +875,26 @@ class ArtGrid extends Component {
                               <div className="flex-row-sb">
                                 <Image
                                   src={
-                                    this.state.profilePic
-                                      ? this.state.profilePic
+                                    post.user.profilePic
+                                      ? post.user.profilePic
                                       : "../images/avatar_default.png"
                                   }
                                   alt=""
                                   className="avatar"
                                 />
-                                <a href="joancox.html" className="no-decor">
+                                <Link to={this.state.isLoggedIn ?`/${post.userId}`:''}
+                                  onClick={this.state.isLoggedIn ? null : this.loginAlert}
+                                  className="no-decor"
+                                >
                                   <div>
                                     <h3>{post.userName}</h3>
                                     <p>
-                                      {this.state.title
-                                        ? this.state.title
+                                      {post.user.title
+                                        ? post.user.title
                                         : "Registra User"}
                                     </p>
                                   </div>
-                                </a>
+                                </Link>
                                 <div className="dropdown br">
                                   <div className="flex-row-sb mb-15">
                                     <div className="flex-row-sb">
@@ -883,7 +977,7 @@ class ArtGrid extends Component {
           }
         });
       } 
-      else {        
+      else {
         this.state.items.forEach((user) => {
           let imgsArr = [];
           if (user.postData.length > 0) {
@@ -936,8 +1030,7 @@ class ArtGrid extends Component {
                           <div>
                             <span className="txt-grey">by </span>
                             <Link to={this.state.isLoggedIn ?`/${singlePost.userId}`:''}
-                                  onClick={this.state.isLoggedIn ? null : this.loginAlert}
-                                >
+                                  onClick={this.state.isLoggedIn ? null : this.loginAlert}>
                               {singlePost.userName}
                             </Link>
                           </div>
@@ -983,14 +1076,17 @@ class ArtGrid extends Component {
                                   alt=""
                                   className="avatar"
                                 />
-                                <a href="joancox.html" className="no-decor">
+                                <Link to={this.state.isLoggedIn ?`/${singlePost.userId}`:''}
+                                  onClick={this.state.isLoggedIn ? null : this.loginAlert}
+                                  className="no-decor"
+                                >
                                   <div>
                                     <h3>{singlePost.userName}</h3>
                                     <p>
                                       {user.title ? user.title : "Registra User"}
                                     </p>
                                   </div>
-                                </a>
+                                </Link>
                                 <div className="dropdown br">
                                   <div className="flex-row-sb mb-15">
                                     <div className="flex-row-sb">
@@ -1161,7 +1257,10 @@ class ArtGrid extends Component {
                                     alt=""
                                     className="avatar"
                                   />
-                                  <a href="joancox.html" className="no-decor">
+                                  <Link to={this.state.isLoggedIn ?`/${singlePost.userId}`:''}
+                                  onClick={this.state.isLoggedIn ? null : this.loginAlert}
+                                  className="no-decor"
+                                >
                                     <div>
                                       <h3>{singlePost.userName}</h3>
                                       <p>
@@ -1170,7 +1269,7 @@ class ArtGrid extends Component {
                                           : "Registra User"}
                                       </p>
                                     </div>
-                                  </a>
+                                  </Link>
                                   <div className="dropdown br">
                                     <div className="flex-row-sb mb-15">
                                       <div className="flex-row-sb">
@@ -1335,14 +1434,17 @@ class ArtGrid extends Component {
                                   alt=""
                                   className="avatar"
                                 />
-                                <a href="joancox.html" className="no-decor">
+                                <Link to={this.state.isLoggedIn ?`/${singlePost.userId}`:''}
+                                  onClick={this.state.isLoggedIn ? null : this.loginAlert}
+                                  className="no-decor"
+                                >
                                   <div>
                                     <h3>{singlePost.userName}</h3>
                                     <p>
                                       {user.title ? user.title : "Registra User"}
                                     </p>
                                   </div>
-                                </a>
+                                </Link>
                                 <div className="dropdown br">
                                   <div className="flex-row-sb mb-15">
                                     <div className="flex-row-sb">

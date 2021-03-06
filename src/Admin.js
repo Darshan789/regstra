@@ -11,6 +11,7 @@ import Login from "/src/components/Login";
 import md5 from "md5";
 import DropDown from "./components/DropDown";
 import Alert from 'react-bootstrap/Alert';
+import PasswordReset from './components/PasswordReset';
 
 class Admin extends Component {
   id = localStorage.getItem("id");
@@ -31,7 +32,8 @@ class Admin extends Component {
       isAdmin: false,
       userPopUp: "",
       alertHtml:'',
-      selectedValue:null,      
+      selectedValue:null, 
+      forgotPassVisible:false,     
     };
     if (this.id) {
       this.checkAdmin();      
@@ -384,6 +386,16 @@ class Admin extends Component {
         });
       });
     }
+  }
+
+  setForgotPassVisible = (event) => {
+    event.preventDefault();
+    this.setState({forgotPassVisible:true});
+  }
+
+  backToLogin = (event) => {
+    event.preventDefault();
+    this.setState({forgotPassVisible:false});
   }
 
   render() {        
@@ -780,7 +792,7 @@ class Admin extends Component {
       return (
         <React.Fragment>
           <main className="admin">
-            <Container fluid>
+            <Container fluid>            
               <Row>
                 <Col
                   lg={2}
@@ -834,11 +846,28 @@ class Admin extends Component {
                           ? "none"
                           : "",
                     }}>
-                    <div>                    
+                    <div style={{display: this.state.selectedItem == 'posts' ? '': 'none'}}>                    
+                      <h1 style={{ textTransform: "capitalize" }}>
+                        Art Media
+                      </h1>
+                    </div>
+                    <div style={{display: this.state.selectedItem == 'blogposts' ? '': 'none'}}>                    
+                      <h1 style={{ textTransform: "capitalize" }}>
+                        Social Posts
+                      </h1>
+                    </div>
+                    <div style={{display: this.state.selectedItem == 'artlover' ? '': 'none'}}>                    
+                      <h1 style={{ textTransform: "capitalize" }}>
+                        Art Lover
+                      </h1>
+                    </div>
+                    <div style={{display: this.state.selectedItem == 'posts' || 
+                    this.state.selectedItem == 'blogposts' ||
+                    this.state.selectedItem == 'artlover' ? 'none': ''}}>                    
                       <h1 style={{ textTransform: "capitalize" }}>
                         {this.state.selectedItem}
                       </h1>
-                    </div>                     
+                    </div>
                     <Col lg={12}>
                     <Row style={{
                           display:
@@ -1092,7 +1121,7 @@ class Admin extends Component {
     } else if (this.id == null) {
       return (
         <React.Fragment>
-          <div id="login" className="admin">
+          <div id="login" className="admin admin-login">
             <div className="modal d-flex align-items-center">
               {/* <div className="modal-head">
                         <div className="logo-white"></div>
@@ -1101,7 +1130,7 @@ class Admin extends Component {
                         </p>
                         <div className="main-illustration"></div>
                     </div> */}
-              <div className="modal-body">
+              <div className="modal-body" style={{display:this.state.forgotPassVisible ? 'none':''}}>
                 <form onSubmit={this.login}>
                   <input
                     className="block"
@@ -1121,6 +1150,11 @@ class Admin extends Component {
                     Log in
                   </button>
                 </form>
+                <span style={{cursor:'pointer'}} onClick={this.setForgotPassVisible}>Forgot Password?</span>
+              </div>
+              <div className="modal-body" style={{display:this.state.forgotPassVisible ? '':'none'}}>
+                <PasswordReset/>
+                <button className="link-btn" style={{cursor:'pointer'}} onClick={this.backToLogin}>Back</button>
               </div>
             </div>
           </div>

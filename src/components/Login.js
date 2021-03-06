@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import md5 from "md5";
+import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
+import PasswordReset from './PasswordReset';
 
 class Login extends Component {
   constructor(props) {
@@ -7,6 +9,7 @@ class Login extends Component {
     this.state = {
       email: "",
       password: "",
+      visible:false
     };
   }
 
@@ -37,6 +40,10 @@ class Login extends Component {
     });
   };
 
+  setVisible = () => {
+    this.setState({visible:true});
+  }
+
   getUserId = () => {
     fetch("http://localhost:4000/userid", {
       method: "POST",
@@ -56,6 +63,11 @@ class Login extends Component {
     });
   };
 
+
+  backToLogin = (event) => {
+    this.setState({visible:false});
+  }
+
   render() {
     return (
       <div id="login" className="overlay hide">
@@ -67,7 +79,7 @@ class Login extends Component {
             </p>
             <div className="main-illustration"></div>
           </div>
-          <div className="modal-body">
+          <div className="modal-body" style={{display:this.state.visible ? 'none':''}}>
             <form onSubmit={this.login}>
               <input
                 className="block"
@@ -87,8 +99,13 @@ class Login extends Component {
                 Log in
               </button>
             </form>
+            <span style={{cursor:'pointer'}} onClick={this.setVisible}>Forgot Password?</span>                         
           </div>
-          <div className="close"></div>
+          <div className="modal-body normal-login" style={{display:this.state.visible ? '':'none'}}>
+            <PasswordReset/>
+            <button className="link-btn" style={{cursor:'pointer'}} onClick={this.backToLogin}>Back</button>
+          </div>
+          <div className="close" onClick={this.backToLogin}></div>
         </div>
       </div>
     );

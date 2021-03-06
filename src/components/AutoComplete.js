@@ -11,11 +11,9 @@ class AutoComplete extends Component {
     };
   }
 
-  onChange = (e) => {
-    console.log(e.currentTarget);
+  onChange = (e) => {  
     const { suggestions } = this.props;
-    const userInput = e.currentTarget.value;
-
+    const userInput = e.currentTarget.value;    
     const filteredSuggestions = suggestions.filter(
       (suggestion) =>
         suggestion.toLowerCase().indexOf(userInput.toLowerCase()) > -1
@@ -81,8 +79,7 @@ class AutoComplete extends Component {
         suggestionsListComponent = (
           <ul className="suggestions" name="postTags" onChange={onChange}>
             {filteredSuggestions.map((suggestion, index) => {
-              let className;
-
+              let className;              
               // Flag the active suggestion with a class
               if (index === activeSuggestion) {
                 className = "suggestion-active";
@@ -90,7 +87,7 @@ class AutoComplete extends Component {
               return (
                 <li
                   className={className}
-                  key={suggestion}
+                  key={index}
                   name="postTags"
                   onClick={onClick}
                 >
